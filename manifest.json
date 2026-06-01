@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "CRM Embedded Workbench",
+  "description": "Adds a right-side document workbench to the company CRM page.",
+  "version": "0.4.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://crm.chinaexp365.com/cloud/*"
+      ],
+      "js": [
+        "vendor/mammoth.browser.min.js",
+        "vendor/xlsx.full.min.js",
+        "src/financialCalculator.js",
+        "src/customerCodeMap.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}
