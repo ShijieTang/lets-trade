@@ -39,6 +39,7 @@
     overfillRate: "5%",
     shortfallRate: "5%"
   };
+  const PRODUCT_FIELD_KEYS = new Set(["productName", "quantity", "unit", "unitPrice", "productAmount"]);
   const TRANSLATIONS = {
     zh: {
       sidebarLabel: "CRM 嵌入式工作台侧边栏",
@@ -369,13 +370,13 @@
         height: 100vh !important;
         overflow: auto !important;
         background: #fff !important;
-        transform: translateZ(0) !important;
-        z-index: 2147483645 !important;
+        z-index: 1 !important;
       }
 
       html.crm-workbench-active #${CRM_SURFACE_ID} {
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100vw !important;
+        max-width: none !important;
+        min-width: 100vw !important;
         min-height: 100vh !important;
       }
     `;
@@ -1101,6 +1102,14 @@
         height: 100%;
         border: 0;
         transform-origin: top left;
+      }
+
+      .pdf-preview {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #262626;
       }
 
       .preview-scale-frame {
@@ -2353,16 +2362,15 @@
     const editor = shadowRoot.querySelector(".editor");
     const fileUrl = createPreviewUrl(file);
     editor.innerHTML = `
-      ${buildScalablePreviewWindow(`
-        <iframe class="preview-scale-content pdf-preview" src="${fileUrl}" title="${escapeHtml(t("pdfPreviewTitle"))}" data-pdf-preview-url="${fileUrl}"></iframe>
-      `)}
+      <div class="preview-window pdf-preview-window" contenteditable="false">
+        <iframe class="pdf-preview" src="${fileUrl}" title="${escapeHtml(t("pdfPreviewTitle"))}" data-pdf-preview-url="${fileUrl}"></iframe>
+      </div>
       <div class="preview-resize-handle" contenteditable="false" role="separator" aria-label="${escapeHtml(t("resizePreview"))}" aria-orientation="horizontal" tabindex="0"></div>
       <p class="status">${escapeHtml(t("pdfLoaded"))}</p>
       <p>${escapeHtml(t("typeNotes"))}</p>
     `;
     applyStoredPreviewHeight();
     bindPreviewResize();
-    bindPreviewZoomControls();
   }
 
   function buildScalablePreviewWindow(contentHtml, options = {}) {
@@ -3957,8 +3965,8 @@
 
   function extractCrmFieldsFromText(text) {
     const normalized = normalizeDocumentText(text);
-      const fields = {};
-      const definitions = getCrmFieldDefinitions();
+    const fields = {};
+    const definitions = getCrmFieldDefinitions();
 
     definitions.forEach((definition) => {
       const value = extractFieldValue(normalized, definition);
@@ -3979,8 +3987,8 @@
   function getCrmFieldDefinitions() {
     return [
       { key: "approvalNo", crmLabel: "合同审批单号", labels: ["合同审批单号", "审批单号", "Approval No", "Approval Number"], required: true },
-      { key: "signDate", crmLabel: "签订日期", labels: ["签订日期", "合同日期", "日期", "Date"], type: "date" },
-      { key: "customerOrderNo", crmLabel: "客户订单号", labels: ["客户订单号", "客户单号", "订单号", "PO No", "P/O No", "Purchase Order"] },
+      { key: "signDate", crmLabel: "签订日期", labels: ["签订日期", "合同日期", "日期", "PO Date", "PODate", "SC Date", "Date"], type: "date" },
+      { key: "customerOrderNo", crmLabel: "客户订单号", labels: ["客户订单号", "客户单号", "订单号", "PO Number", "PONumber", "PO No", "P/O No", "Purchase Order"] },
       { key: "quoteNo", crmLabel: "报价单号", labels: ["报价单号", "报价号", "Quotation No", "Quote No"] },
       { key: "purchaseSaleMode", crmLabel: "购销方式", labels: ["购销方式", "采购销售方式", "Purchase/Sales Mode"], required: true },
       { key: "customer", crmLabel: "客户", labels: ["客户", "买方", "Buyer", "Customer", "Consignee"], required: true },
@@ -3994,17 +4002,18 @@
       { key: "deliveryTerm", crmLabel: "交货期限", labels: ["交货期限", "交货期", "Delivery Time", "Delivery Term", "Shipment Time"] },
       { key: "transportMode", crmLabel: "运输方式", labels: ["运输方式", "Transport", "Transportation", "Shipment By", "Mode of Transport"], type: "transport", required: true },
       { key: "loadingPort", crmLabel: "装运港", labels: ["装运港", "起运港", "Port of Loading", "Loading Port", "POL"] },
-      { key: "destinationPort", crmLabel: "目的港", labels: ["目的港", "卸货港", "Port of Destination", "Destination Port", "POD", "Port of Discharge"], required: true },
+      { key: "destinationPort", crmLabel: "目的港", labels: ["目的港", "卸货港", "Dest. Port", "Dest Port", "Port of Destination", "Destination Port", "POD", "Port of Discharge"], required: true },
       { key: "loadingCountry", crmLabel: "装运港国家(地区)", labels: ["装运港国家", "起运国", "Country of Loading"] },
       { key: "destinationCountry", crmLabel: "目的港国家(地区)", labels: ["目的港国家", "目的国", "Destination Country"] },
       { key: "destination", crmLabel: "目的地", labels: ["目的地", "Final Destination", "Destination"] },
-      { key: "tradeTerm", crmLabel: "成交方式", labels: ["成交方式", "贸易术语", "Trade Term", "Incoterms", "Price Term"], type: "tradeTerm", required: true },
+      { key: "tradeTerm", crmLabel: "成交方式", labels: ["成交方式", "贸易术语", "Trade Term", "Inco Terms", "Incoterms", "Price Term"], type: "tradeTerm", required: true },
       { key: "overfillRate", crmLabel: "溢装率", labels: ["溢装率", "溢短装", "More or Less", "Tolerance"], type: "percent", required: true },
       { key: "shortfallRate", crmLabel: "短装率", labels: ["短装率", "Shortfall Rate", "Tolerance"], type: "percent", required: true },
       { key: "shippingMark", crmLabel: "唛头", labels: ["唛头", "Shipping Mark", "Marks"] },
       { key: "remark", crmLabel: "备注", labels: ["备注", "Remark", "Remarks", "Notes"] },
       { key: "productName", crmLabel: "商品", labels: ["商品", "商品名称", "产品名称", "品名", "Product", "Product Name", "Description"], required: true },
       { key: "casNo", crmLabel: "CAS NO", labels: ["CAS NO", "CAS No.", "CAS", "CAS号"] },
+      { key: "customsScNo", crmLabel: "报关SC NO", labels: ["报关SC NO", "报关SC号", "Sales Contract Number", "Sales Contract No.", "SC NO"] },
       { key: "quantity", crmLabel: "数量", labels: ["数量", "合同数量", "Quantity", "Qty"], type: "number", required: true },
       { key: "unit", crmLabel: "单位", labels: ["单位", "Unit"], required: true },
       { key: "unitPrice", crmLabel: "单价", labels: ["单价", "销售单价", "Unit Price", "Price"], type: "money", required: true },
@@ -4062,6 +4071,11 @@
       if (dateMatch) {
         return `${dateMatch[1]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[3].padStart(2, "0")}`;
       }
+
+      const dayFirstDateMatch = cleaned.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+      if (dayFirstDateMatch) {
+        return `${dayFirstDateMatch[3]}-${dayFirstDateMatch[2].padStart(2, "0")}-${dayFirstDateMatch[1].padStart(2, "0")}`;
+      }
     }
 
     if (definition.type === "money" || definition.type === "number") {
@@ -4118,6 +4132,20 @@
   }
 
   function applyFallbackFieldExtraction(text, fields) {
+    if (!fields.customer) {
+      const customerCandidate = text.split("\n")
+        .map(cleanExtractedValue)
+        .find((line) => {
+          return line.length >= 5
+            && line.length <= 120
+            && /\b(?:Limited|LTD|Private Limited|PVT LTD|LLC|INC|CORP|CO\.? LTD)\b/i.test(line);
+        });
+
+      if (customerCandidate) {
+        fields.customer = { label: "客户", value: customerCandidate };
+      }
+    }
+
     if (!fields.currency) {
       const currencyMatch = text.match(/\b(USD|EUR|CNY|RMB|JPY|GBP|INR)\b/i);
       if (currencyMatch) {
@@ -4133,29 +4161,79 @@
     }
 
     if (!fields.contractAmount) {
-      const amountMatch = text.match(/\b(?:USD|US\$|\$)\s*([\d,]+(?:\.\d{1,2})?)/i);
+      const amountMatch = text.match(/\b(?:USD|US\$|\$)\s*([\d,]+(?:\.\d{1,2})?)/i)
+        || text.match(/(?:Grand\s+Total|Total\s+Amount|Net\s+Value)[^\d]{0,80}([\d,]+(?:\.\d{1,2})?)/i);
       if (amountMatch) {
         fields.contractAmount = { label: "合同总金额", value: amountMatch[1].replace(/,/g, "") };
         fields.usdAmount = fields.usdAmount || { label: "美元总金额", value: fields.contractAmount.value };
+        fields.productAmount = fields.productAmount || { label: "商品金额", value: fields.contractAmount.value };
       }
     }
 
     if (!fields.signDate) {
-      const dateMatch = text.match(/(?:^|[^\d])(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})(?:日)?(?:[^\d]|$)/);
-      if (dateMatch) {
+      const dateMatch = text.match(/(?:^|[^\d])(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})(?:日)?(?:[^\d]|$)/)
+        || text.match(/(?:^|[^\d])(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})(?:[^\d]|$)/);
+      if (dateMatch && dateMatch[1].length === 4) {
         fields.signDate = {
           label: "签订日期",
           value: `${dateMatch[1]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[3].padStart(2, "0")}`
         };
+      } else if (dateMatch) {
+        fields.signDate = {
+          label: "签订日期",
+          value: `${dateMatch[3]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[1].padStart(2, "0")}`
+        };
+      }
+    }
+
+    if (!fields.country && /\b(?:Punjab|Mohali|Chandigarh|Nhava\s+Sheva|Nava\s+Sheva)\b/i.test(text)) {
+      fields.country = { label: "国别地区", value: "印度" };
+    }
+
+    if (!fields.destinationCountry && /\b(?:Punjab|Mohali|Chandigarh|Nhava\s+Sheva|Nava\s+Sheva)\b/i.test(text)) {
+      fields.destinationCountry = { label: "目的港国家(地区)", value: "India" };
+    }
+
+    if (!fields.transportMode && /\b(?:Sea\s+Port|Port\s+Of\s+Loading|Dest\.?\s+Port|BOL)\b/i.test(text)) {
+      fields.transportMode = { label: "运输方式", value: "By Sea" };
+    }
+
+    if (!fields.customsScNo) {
+      const salesContract = extractFirstMatchingText(text, [
+        /(?:Sales\s+Contract\s+Number|Sales\s+Contract\s+No\.?)\s*[:：|]\s*((?:YS|DC|YSDC)-[A-Z0-9]{2,8}\d{8})/i
+      ]);
+      if (salesContract) {
+        fields.customsScNo = { label: "报关SC NO", value: salesContract };
+      }
+    }
+
+    if (!fields.quantity) {
+      const quantityMatch = text.match(/\b([\d,]+(?:\.\d+)?)\s*(?:KGS?|KG|千克)\b/i);
+      if (quantityMatch) {
+        fields.quantity = { label: "数量", value: quantityMatch[1].replace(/,/g, "") };
+      }
+    }
+
+    if (!fields.productName) {
+      const productName = extractFirstMatchingText(text, [
+        /\b\d+(?:\.\d+)?\s*(?:KGS?|KG|千克)\s+(.{2,80}?)(?:\s+(?:YS|DC|YSDC)-|\s+H\d|\s+\d{2}[./-]\d{2}|$)/i,
+        /Material\s+Description[^\n]*\n\s*([^\n]{2,80})/i
+      ]);
+      if (productName && !/\b(?:prompt|june|shipment|confirmation)\b/i.test(productName)) {
+        fields.productName = { label: "商品", value: productName };
+      }
+    }
+
+    if (!fields.unitPrice && fields.quantity?.value && fields.productAmount?.value) {
+      const quantity = safeParseFloat(fields.quantity.value);
+      const amount = safeParseFloat(fields.productAmount.value);
+      if (quantity > 0 && amount > 0) {
+        fields.unitPrice = { label: "单价", value: formatCompactNumber(amount / quantity, 6) };
       }
     }
   }
 
   function applyGeneratedApprovalNo(text, fields) {
-    if (fields.approvalNo?.value) {
-      return;
-    }
-
     const companyPrefix = inferApprovalCompanyPrefix(text);
     const customCode = inferApprovalCustomCode(text, fields);
     const dateCode = inferApprovalDateCode(text, fields);
@@ -4164,6 +4242,7 @@
       return;
     }
 
+    // Always prefer the deterministic CRM rule over loosely extracted OCR text.
     fields.approvalNo = {
       label: "合同审批单号",
       value: `${companyPrefix}-${customCode}${dateCode}`
@@ -4189,7 +4268,8 @@
   function inferApprovalCustomCode(text, fields) {
     const labeledCode = extractFirstMatchingText(text, [
       /(?:客户简称|客户代码|客户代号|custom(?:er)?\s*(?:name|code)|customer\s*abbr(?:eviation)?|code)\s*[:：|]\s*([A-Z0-9]{2,8})/i,
-      /(?:审批单号|合同审批单号)\s*[:：|]\s*(?:YS|DC|YSDC)-([A-Z0-9]{2,8})\d{8}/i
+      /(?:审批单号|合同审批单号)\s*[:：|]\s*(?:YS|DC|YSDC)-([A-Z0-9]{2,8})\d{8}/i,
+      /(?:Sales\s+Contract\s+Number|Sales\s+Contract\s+No\.?)\s*[:：|]\s*(?:YS|DC|YSDC)-([A-Z0-9]{2,8})\d{8}/i
     ]);
 
     if (labeledCode) {
@@ -4248,17 +4328,30 @@
   }
 
   function inferApprovalDateCode(text, fields) {
+    const contractDateCode = extractFirstMatchingText(text, [
+      /(?:Sales\s+Contract\s+Number|Sales\s+Contract\s+No\.?)\s*[:：|]\s*(?:YS|DC|YSDC)-[A-Z0-9]{2,8}(\d{8})/i
+    ]);
+    if (contractDateCode) {
+      return contractDateCode;
+    }
+
     const dateValue = fields.signDate?.value || extractFirstMatchingText(text, [
       /(?:签订日期|合同日期|date)\s*[:：|]\s*(\d{4}[-/.年]\d{1,2}[-/.月]\d{1,2})/i,
+      /(?:PO\s*Date|PODate|SC\s*Date)\D{0,20}(\d{1,2}[-/.]\d{1,2}[-/.]\d{4})/i,
       /(\d{4}[-/.年]\d{1,2}[-/.月]\d{1,2})/
     ]);
-    const dateMatch = String(dateValue || "").match(/(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})/);
+    const dateMatch = String(dateValue || "").match(/(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})/)
+      || String(dateValue || "").match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
 
     if (!dateMatch) {
       return "";
     }
 
-    return `${dateMatch[1]}${dateMatch[2].padStart(2, "0")}${dateMatch[3].padStart(2, "0")}`;
+    if (dateMatch[1].length === 4) {
+      return `${dateMatch[1]}${dateMatch[2].padStart(2, "0")}${dateMatch[3].padStart(2, "0")}`;
+    }
+
+    return `${dateMatch[3]}${dateMatch[2].padStart(2, "0")}${dateMatch[1].padStart(2, "0")}`;
   }
 
   function extractFirstMatchingText(text, patterns) {
@@ -4286,7 +4379,7 @@
   }
 
   async function fillCrmFieldsInBestContext(fields) {
-    const currentResult = fillCrmFieldsInDocument(fields);
+    const currentResult = await fillCrmFieldsInDocument(fields);
     const frameResult = getCrmFrames().length > 0
       ? await fillCrmFieldsInFrames(fields)
       : { filled: 0, skipped: 0 };
@@ -4340,29 +4433,45 @@
     });
   }
 
-  function fillCrmFieldsInDocument(fields) {
+  async function fillCrmFieldsInDocument(fields) {
     let filled = 0;
     let skipped = 0;
 
-    Object.values(fields).forEach((field) => {
-      if (setCrmFieldValue(field.label, field.value)) {
+    for (const [key, field] of Object.entries(fields)) {
+      if (PRODUCT_FIELD_KEYS.has(key)) {
+        continue;
+      }
+
+      if (await setCrmFieldValue(field.label, field.value, { ...field, key })) {
         filled += 1;
       } else {
         skipped += 1;
       }
-    });
+    }
+
+    const productResult = await fillProductSection(fields);
+    filled += productResult.filled;
+    skipped += productResult.skipped;
 
     return { filled, skipped };
   }
 
-  function setCrmFieldValue(label, value) {
+  async function setCrmFieldValue(label, value, field = {}) {
     const labelElement = findCrmLabelElement(label);
     if (!labelElement) {
       return false;
     }
 
+    if (field.key === "customer") {
+      return selectCustomerFromDialog(value, labelElement);
+    }
+
     const containers = getLikelyFieldContainers(labelElement);
     for (const container of containers) {
+      if (field.key === "signDate" && setDateFieldInContainer(container, value, labelElement)) {
+        return true;
+      }
+
       if (setCustomSelectInContainer(container, value, labelElement) || setNativeFieldInContainer(container, value, labelElement)) {
         return true;
       }
@@ -4371,19 +4480,440 @@
     return false;
   }
 
-  function findCrmLabelElement(label) {
-    const candidates = Array.from(document.body.querySelectorAll("label,span,div,td,th"))
-      .filter((element) => {
-        if (isExtensionElement(element) || !isVisible(element)) {
-          return false;
+  async function fillProductSection(fields) {
+    const productName = fields.productName?.value || "";
+    const quantity = fields.quantity?.value || "";
+    const unitPrice = fields.unitPrice?.value || "";
+    const productAmount = fields.productAmount?.value || fields.contractAmount?.value || "";
+    let filled = 0;
+    let skipped = 0;
+
+    const productHeading = findCrmLabelElement("商品信息");
+    if (productHeading) {
+      productHeading.scrollIntoView({ block: "center", inline: "nearest" });
+      await delay(250);
+    }
+
+    if (productName) {
+      const selectedProduct = await selectProductFromDialog(productName);
+      if (selectedProduct) {
+        filled += 1;
+      } else {
+        skipped += 1;
+      }
+    }
+
+    await delay(250);
+    const productTable = findProductInfoTable();
+    if (!productTable) {
+      return { filled, skipped: skipped + countPresentValues([quantity, unitPrice, productAmount]) };
+    }
+
+    const tableFillers = [
+      ["数量", quantity],
+      ["单价", unitPrice],
+      ["金额", productAmount]
+    ];
+
+    for (const [header, value] of tableFillers) {
+      if (!value) {
+        continue;
+      }
+
+      if (await setGridCellValueByHeader(productTable, header, value)) {
+        filled += 1;
+      } else {
+        skipped += 1;
+      }
+    }
+
+    return { filled, skipped };
+  }
+
+  async function selectCustomerFromDialog(customerName, labelElement) {
+    if (!customerName) {
+      return false;
+    }
+
+    const containers = getLikelyFieldContainers(labelElement);
+    const customerPicker = containers.flatMap((container) => {
+      return getFieldControlsNearLabel(container, labelElement, "[role='combobox'],.el-select,.ant-select,.ivu-select,[class*='select'],input:not([type='hidden'])");
+    }).find((element) => !isDisabled(element));
+
+    if (!customerPicker) {
+      return false;
+    }
+
+    clickCrmElement(customerPicker);
+
+    const dialog = await waitForElement(() => findDialogByText("客户"), {
+      timeout: CRM_MODAL_TIMEOUT,
+      description: "客户选择弹窗"
+    }).catch(() => null);
+
+    if (!dialog) {
+      return false;
+    }
+
+    const merchantNameInput = findDialogFieldInput(dialog, "客商名称") || findCustomerSearchInput(dialog);
+    if (!merchantNameInput) {
+      return false;
+    }
+
+    setInputValue(merchantNameInput, customerName);
+    const queryButton = findEnabledButtonByText(dialog, ["查询"]);
+    if (queryButton) {
+      clickCrmElement(queryButton);
+    }
+
+    await delay(700);
+
+    const bestRow = findBestDialogResultRow(dialog, customerName);
+    if (!bestRow) {
+      return false;
+    }
+
+    const checkbox = bestRow.querySelector("input[type='checkbox'], .el-checkbox, .ant-checkbox, [role='checkbox']");
+    clickCrmElement(checkbox || bestRow);
+
+    await delay(150);
+
+    const confirmButton = findEnabledButtonByText(dialog, ["确定"]);
+    if (!confirmButton) {
+      return false;
+    }
+
+    clickCrmElement(confirmButton);
+    await delay(700);
+    return true;
+  }
+
+  async function selectProductFromDialog(productName) {
+    const selectProductButton = findClickableByText(document.body, ["选择产品"], {
+      selectors: "button,a,[role='button'],.el-button,.ant-btn,.ivu-btn,span,div"
+    });
+
+    if (!selectProductButton) {
+      return false;
+    }
+
+    clickCrmElement(selectProductButton);
+
+    const dialog = await waitForElement(() => findDialogByText("选择产品"), {
+      timeout: CRM_MODAL_TIMEOUT,
+      description: "选择产品弹窗"
+    }).catch(() => null);
+
+    if (!dialog) {
+      return false;
+    }
+
+    const searchInput = findProductSearchInput(dialog);
+    if (!searchInput) {
+      return false;
+    }
+
+    setInputValue(searchInput, productName);
+    const queryButton = findEnabledButtonByText(dialog, ["查询"]);
+    if (queryButton) {
+      clickCrmElement(queryButton);
+    }
+
+    await delay(700);
+
+    const bestRow = findBestDialogResultRow(dialog, productName);
+    if (!bestRow) {
+      return false;
+    }
+
+    const checkbox = bestRow.querySelector("input[type='checkbox'], .el-checkbox, .ant-checkbox, [role='checkbox']");
+    clickCrmElement(checkbox || bestRow);
+
+    await delay(150);
+
+    const confirmButton = findEnabledButtonByText(dialog, ["确定"]);
+    if (!confirmButton) {
+      return false;
+    }
+
+    clickCrmElement(confirmButton);
+    await delay(700);
+    return true;
+  }
+
+  function findDialogByText(text) {
+    const modalSelectors = [
+      ".el-dialog",
+      ".ant-modal",
+      ".ivu-modal",
+      ".modal",
+      "[role='dialog']",
+      "[aria-modal='true']"
+    ].join(",");
+
+    const modalCandidates = Array.from(document.body.querySelectorAll(modalSelectors)).filter((element) => {
+      return !isExtensionElement(element)
+        && isVisible(element)
+        && normalizeText(element.textContent).includes(text);
+    });
+
+    if (modalCandidates.length > 0) {
+      modalCandidates.sort((first, second) => getElementArea(first) - getElementArea(second));
+      return modalCandidates[0];
+    }
+
+    const candidates = Array.from(document.body.querySelectorAll("div[class]")).filter((element) => {
+      if (isExtensionElement(element) || !isVisible(element)) {
+        return false;
+      }
+
+      const rect = element.getBoundingClientRect();
+      const dialogText = normalizeText(element.textContent);
+      return rect.width >= 500
+        && rect.height >= 250
+        && dialogText.includes(text)
+        && (dialogText.includes("查询") || dialogText.includes("确定"));
+    });
+
+    candidates.sort((first, second) => getElementArea(first) - getElementArea(second));
+    return candidates[0] || null;
+  }
+
+  function findProductSearchInput(dialog) {
+    const inputs = Array.from(dialog.querySelectorAll("input:not([type='hidden']), textarea"))
+      .filter((input) => !input.disabled && isVisible(input));
+
+    return inputs.find((input) => {
+      const placeholder = normalizeText(input.getAttribute("placeholder"));
+      return /中文品名|英文品名|规格型号|品名/i.test(placeholder);
+    }) || inputs[0] || null;
+  }
+
+  function findCustomerSearchInput(dialog) {
+    const inputs = Array.from(dialog.querySelectorAll("input:not([type='hidden']), textarea"))
+      .filter((input) => !input.disabled && isVisible(input));
+
+    return inputs.find((input) => {
+      const placeholder = normalizeText(input.getAttribute("placeholder"));
+      return /客商名称|客户名称|名称/i.test(placeholder);
+    }) || inputs[1] || inputs[0] || null;
+  }
+
+  function findDialogFieldInput(dialog, label) {
+    const labelElement = findLabelInRoot(dialog, label);
+    if (!labelElement) {
+      return null;
+    }
+
+    return getFieldControlsNearLabel(dialog, labelElement, "input:not([type='hidden']), textarea")
+      .find((input) => !input.disabled) || null;
+  }
+
+  function findLabelInRoot(root, label) {
+    const targetLabel = normalizeCrmLabelText(label);
+    const candidates = Array.from(root.querySelectorAll("label,span,div,td,th"))
+      .map((element) => {
+        if (!isVisible(element)) {
+          return null;
         }
 
-        const text = normalizeText(element.textContent).replace(/\*/g, "");
-        return text === label || text.endsWith(label) || text.includes(label);
-      });
+        const text = normalizeCrmLabelText(element.textContent);
+        if (text === targetLabel) {
+          return { element, score: 0 };
+        }
 
-    candidates.sort((first, second) => normalizeText(first.textContent).length - normalizeText(second.textContent).length);
+        const allowsSmallSuffix = text.endsWith(targetLabel) && text.length <= targetLabel.length + 4;
+        return allowsSmallSuffix ? { element, score: text.length - targetLabel.length } : null;
+      })
+      .filter(Boolean);
+
+    candidates.sort((first, second) => first.score - second.score);
+    return candidates[0]?.element || null;
+  }
+
+  function findBestDialogResultRow(dialog, searchText) {
+    const query = normalizeProductSearchText(searchText);
+    const rows = Array.from(dialog.querySelectorAll("tbody tr, .el-table__body tr, [role='row']"))
+      .filter((row) => isVisible(row) && normalizeText(row.textContent));
+
+    const scoredRows = rows.map((row) => {
+      const rowText = normalizeProductSearchText(row.textContent);
+      return {
+        row,
+        score: calculateProductMatchScore(query, rowText)
+      };
+    }).filter((item) => item.score > 0);
+
+    scoredRows.sort((first, second) => second.score - first.score);
+    return scoredRows[0]?.row || rows[0] || null;
+  }
+
+  function calculateProductMatchScore(query, rowText) {
+    if (!query || !rowText) {
+      return 0;
+    }
+
+    if (rowText.includes(query)) {
+      return 100 + query.length;
+    }
+
+    const tokens = query.split(/\s+/).filter((token) => token.length >= 2);
+    return tokens.reduce((score, token) => rowText.includes(token) ? score + token.length : score, 0);
+  }
+
+  function normalizeProductSearchText(value) {
+    return normalizeText(value).toLowerCase().replace(/[()（）,，.;；:：'"]/g, " ");
+  }
+
+  function findProductInfoTable() {
+    const heading = findCrmLabelElement("商品信息");
+    if (!heading) {
+      return null;
+    }
+
+    const candidates = Array.from(document.body.querySelectorAll("table")).filter((table) => {
+      if (!isVisible(table)) {
+        return false;
+      }
+
+      const tableTop = table.getBoundingClientRect().top;
+      const headingTop = heading.getBoundingClientRect().top;
+      const text = normalizeText(table.textContent);
+      return tableTop >= headingTop && text.includes("产品编号") && text.includes("数量") && text.includes("单价");
+    });
+
+    candidates.sort((first, second) => first.getBoundingClientRect().top - second.getBoundingClientRect().top);
     return candidates[0] || null;
+  }
+
+  async function setGridCellValueByHeader(table, headerText, value) {
+    const columnIndex = await findTableColumnIndexWithHorizontalScroll(table, headerText);
+    const dataRow = findFirstEditableTableRow(table);
+    if (columnIndex < 0 || !dataRow) {
+      return false;
+    }
+
+    const cell = dataRow.cells[columnIndex];
+    if (!cell) {
+      return false;
+    }
+
+    cell.scrollIntoView({ block: "center", inline: "center" });
+    await delay(120);
+
+    const existingInput = cell.querySelector("input:not([type='hidden']), textarea");
+    if (existingInput) {
+      setInputValue(existingInput, value);
+      return true;
+    }
+
+    clickCrmElement(cell);
+    cell.dispatchEvent(new MouseEvent("dblclick", { bubbles: true, cancelable: true, view: window }));
+    await delay(150);
+
+    const activeInput = cell.querySelector("input:not([type='hidden']), textarea") || document.activeElement;
+    if (activeInput instanceof HTMLInputElement || activeInput instanceof HTMLTextAreaElement) {
+      setInputValue(activeInput, value);
+      return true;
+    }
+
+    return false;
+  }
+
+  async function findTableColumnIndexWithHorizontalScroll(table, headerText) {
+    let columnIndex = findTableColumnIndex(table, headerText);
+    if (columnIndex >= 0) {
+      return columnIndex;
+    }
+
+    const scrollContainers = findHorizontalScrollContainers(table);
+    for (const container of scrollContainers) {
+      const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth);
+      const steps = [0, 0.35, 0.7, 1];
+      for (const step of steps) {
+        container.scrollLeft = Math.round(maxScrollLeft * step);
+        await delay(120);
+        columnIndex = findTableColumnIndex(table, headerText);
+        if (columnIndex >= 0) {
+          return columnIndex;
+        }
+      }
+    }
+
+    return -1;
+  }
+
+  function findHorizontalScrollContainers(element) {
+    const containers = [];
+    let current = element;
+    while (current && current !== document.body) {
+      if (current.scrollWidth > current.clientWidth + 4) {
+        containers.push(current);
+      }
+      current = current.parentElement;
+    }
+
+    return containers;
+  }
+
+  function findTableColumnIndex(table, headerText) {
+    const rows = Array.from(table.rows);
+    const headerRow = rows.find((row) => normalizeText(row.textContent).includes(headerText));
+    if (!headerRow) {
+      return -1;
+    }
+
+    return Array.from(headerRow.cells).findIndex((cell) => {
+      return normalizeText(cell.textContent).replace(/\*/g, "").includes(headerText);
+    });
+  }
+
+  function findFirstEditableTableRow(table) {
+    return Array.from(table.rows).find((row) => {
+      const text = normalizeText(row.textContent);
+      return text && !text.includes("产品编号") && (row.querySelector("input,textarea") || text.includes("G"));
+    }) || null;
+  }
+
+  function countPresentValues(values) {
+    return values.filter((value) => Boolean(value)).length;
+  }
+
+  function delay(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  function findCrmLabelElement(label) {
+    const targetLabel = normalizeCrmLabelText(label);
+    const candidates = Array.from(document.body.querySelectorAll("label,span,div,td,th"))
+      .map((element) => {
+        if (isExtensionElement(element) || !isVisible(element)) {
+          return null;
+        }
+
+        const text = normalizeCrmLabelText(element.textContent);
+        if (!text) {
+          return null;
+        }
+
+        if (text === targetLabel) {
+          return { element, score: 0 };
+        }
+
+        const allowsSmallSuffix = text.endsWith(targetLabel) && text.length <= targetLabel.length + 4;
+        return allowsSmallSuffix ? { element, score: text.length - targetLabel.length } : null;
+      })
+      .filter(Boolean);
+
+    candidates.sort((first, second) => first.score - second.score);
+    return candidates[0]?.element || null;
+  }
+
+  function normalizeCrmLabelText(value) {
+    return normalizeText(value)
+      .replace(/\*/g, "")
+      .replace(/[：:]+$/g, "")
+      .trim();
   }
 
   function getLikelyFieldContainers(labelElement) {
@@ -4406,8 +4936,8 @@
   }
 
   function setNativeFieldInContainer(container, value, labelElement) {
-    const controls = Array.from(container.querySelectorAll("input:not([type='hidden']), textarea"))
-      .filter((control) => control !== labelElement && !control.disabled && isVisible(control));
+    const controls = getFieldControlsNearLabel(container, labelElement, "input:not([type='hidden']), textarea")
+      .filter((control) => !control.disabled);
 
     const control = controls.find((item) => item.type !== "checkbox" && item.type !== "radio");
     if (!control) {
@@ -4418,14 +4948,129 @@
     return true;
   }
 
+  function setDateFieldInContainer(container, value, labelElement) {
+    const dateParts = parseCrmDateValue(value);
+    if (!dateParts) {
+      return false;
+    }
+
+    const input = getFieldControlsNearLabel(container, labelElement, "input:not([type='hidden'])")
+      .find((control) => !control.disabled);
+
+    if (!input) {
+      return false;
+    }
+
+    setInputValue(input, dateParts.iso);
+    if (normalizeText(input.value) === dateParts.iso) {
+      return true;
+    }
+
+    clickCrmElement(input);
+    return selectDateFromOpenPicker(dateParts) || false;
+  }
+
+  function parseCrmDateValue(value) {
+    const normalizedValue = String(value || "").trim();
+    const isoMatch = normalizedValue.match(/^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})/);
+    if (isoMatch) {
+      return {
+        year: Number(isoMatch[1]),
+        month: Number(isoMatch[2]),
+        day: Number(isoMatch[3]),
+        iso: `${isoMatch[1]}-${isoMatch[2].padStart(2, "0")}-${isoMatch[3].padStart(2, "0")}`
+      };
+    }
+
+    const dayFirstMatch = normalizedValue.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+    if (dayFirstMatch) {
+      return {
+        year: Number(dayFirstMatch[3]),
+        month: Number(dayFirstMatch[2]),
+        day: Number(dayFirstMatch[1]),
+        iso: `${dayFirstMatch[3]}-${dayFirstMatch[2].padStart(2, "0")}-${dayFirstMatch[1].padStart(2, "0")}`
+      };
+    }
+
+    return null;
+  }
+
+  function selectDateFromOpenPicker(dateParts) {
+    const picker = findVisibleDatePicker();
+    if (!picker) {
+      return false;
+    }
+
+    setDatePickerSelectValue(picker, String(dateParts.year));
+    setDatePickerSelectValue(picker, String(dateParts.month));
+
+    const dayButton = findDatePickerDayButton(picker, dateParts.day);
+    if (!dayButton) {
+      return false;
+    }
+
+    clickCrmElement(dayButton);
+    return true;
+  }
+
+  function findVisibleDatePicker() {
+    const pickerSelectors = [
+      ".el-picker-panel",
+      ".ant-picker-dropdown",
+      ".ivu-date-picker",
+      ".mx-datepicker-popup",
+      "[class*='date-picker']",
+      "[class*='datepicker']",
+      "[class*='calendar']"
+    ].join(",");
+
+    return Array.from(document.body.querySelectorAll(pickerSelectors))
+      .filter((element) => !isExtensionElement(element) && isVisible(element))
+      .sort((first, second) => getElementArea(first) - getElementArea(second))[0] || null;
+  }
+
+  function setDatePickerSelectValue(picker, value) {
+    const normalizedValue = normalizeComparableText(value);
+    const select = Array.from(picker.querySelectorAll("select")).find((control) => {
+      return Array.from(control.options).some((option) => normalizeComparableText(option.textContent).includes(normalizedValue) || normalizeComparableText(option.value) === normalizedValue);
+    });
+
+    if (select && setSelectValue(select, value)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function findDatePickerDayButton(picker, day) {
+    const dayText = String(day);
+    const candidates = Array.from(picker.querySelectorAll("td,button,span,div")).filter((element) => {
+      if (!isVisible(element) || isDisabled(element)) {
+        return false;
+      }
+
+      const text = normalizeText(element.textContent);
+      if (text !== dayText) {
+        return false;
+      }
+
+      const className = String(element.className || "");
+      return !/prev|next|old|new|disabled/i.test(className);
+    });
+
+    candidates.sort((first, second) => getElementArea(first) - getElementArea(second));
+    return candidates[0] || null;
+  }
+
   function setCustomSelectInContainer(container, value, labelElement) {
-    const select = Array.from(container.querySelectorAll("select")).find((control) => control !== labelElement && !control.disabled && isVisible(control));
+    const select = getFieldControlsNearLabel(container, labelElement, "select")
+      .find((control) => !control.disabled);
     if (select) {
       return setSelectValue(select, value);
     }
 
-    const clickable = Array.from(container.querySelectorAll("[role='combobox'],.el-select,.ant-select,.ivu-select,[class*='select']"))
-      .find((element) => element !== labelElement && isVisible(element) && !isDisabled(element));
+    const clickable = getFieldControlsNearLabel(container, labelElement, "[role='combobox'],.el-select,.ant-select,.ivu-select,[class*='select']")
+      .find((element) => !isDisabled(element));
 
     if (!clickable) {
       return false;
@@ -4445,6 +5090,31 @@
     }
 
     return false;
+  }
+
+  function getFieldControlsNearLabel(container, labelElement, selectors) {
+    const labelRect = labelElement.getBoundingClientRect();
+    const labelCenterY = labelRect.top + (labelRect.height / 2);
+
+    return Array.from(container.querySelectorAll(selectors))
+      .filter((control) => {
+        if (control === labelElement || control.contains(labelElement) || isExtensionElement(control) || !isVisible(control)) {
+          return false;
+        }
+
+        const rect = control.getBoundingClientRect();
+        const centerY = rect.top + (rect.height / 2);
+        const isSameVisualRow = Math.abs(centerY - labelCenterY) <= Math.max(36, labelRect.height * 1.8);
+        const isToRightOfLabel = rect.left >= labelRect.left + Math.min(labelRect.width * 0.5, 48);
+        return isSameVisualRow && isToRightOfLabel;
+      })
+      .sort((first, second) => {
+        const firstRect = first.getBoundingClientRect();
+        const secondRect = second.getBoundingClientRect();
+        const firstScore = Math.abs((firstRect.top + firstRect.height / 2) - labelCenterY) + Math.max(0, firstRect.left - labelRect.right);
+        const secondScore = Math.abs((secondRect.top + secondRect.height / 2) - labelCenterY) + Math.max(0, secondRect.left - labelRect.right);
+        return firstScore - secondScore;
+      });
   }
 
   function setInputValue(input, value) {
@@ -4604,14 +5274,14 @@
       }
     });
 
-    window.addEventListener("message", (event) => {
+    window.addEventListener("message", async (event) => {
       if (event.source !== window.parent || event.data?.type !== FRAME_AUTOFILL_REQUEST) {
         return;
       }
 
       const { requestId, fields } = event.data;
       try {
-        const result = fillCrmFieldsInDocument(fields || {});
+        const result = await fillCrmFieldsInDocument(fields || {});
         window.parent.postMessage({
           type: FRAME_AUTOFILL_RESPONSE,
           requestId,

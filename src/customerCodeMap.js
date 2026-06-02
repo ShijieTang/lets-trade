@@ -10,6 +10,7 @@
  */
 (function exposeCustomerCodeMap(globalScope) {
   globalScope.CRM_WORKBENCH_CUSTOMER_CODE_MAP = {
-    "SUN PHARMACEUTICAL INDUSTRIES LTD": "KHN"
+    "SUN PHARMACEUTICAL INDUSTRIES LTD": "KHN",
+    "SYNTHIMED LABS PRIVATE LIMITED": "XH"
   };
 })(globalThis);
