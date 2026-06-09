@@ -40,6 +40,8 @@
   const FRAME_UPLOAD_RESPONSE = "CRM_WORKBENCH_UPLOAD_RESPONSE";
   const FRAME_AUTOFILL_REQUEST = "CRM_WORKBENCH_AUTOFILL_REQUEST";
   const FRAME_AUTOFILL_RESPONSE = "CRM_WORKBENCH_AUTOFILL_RESPONSE";
+  const FRAME_AUTOMATION_FILL_REQUEST = "CRM_WORKBENCH_AUTOMATION_FILL_REQUEST";
+  const FRAME_AUTOMATION_FILL_RESPONSE = "CRM_WORKBENCH_AUTOMATION_FILL_RESPONSE";
   const DEFAULT_PREVIEW_ZOOM = "100";
   const PREVIEW_ZOOM_LEVELS = [50, 75, 100, 125, 150, 200];
   const FINANCIAL_SOURCE_COLUMN_COUNT = 51;
@@ -446,6 +448,7 @@
       navUpload: "上传",
       navLinks: "网站",
       navDocFlow: "单证",
+      navAutomation: "自动化",
       navCalculator: "计算",
       navFinancial: "退税",
       navDocument: "文档",
@@ -539,6 +542,66 @@
       exportLibraryMissing: "表格导出库缺失。请重新加载扩展后再试。",
       noCalculatedTable: "没有可保存的计算表格。",
       savedWorkbook: "已保存 {filename}。浏览器安全限制不允许直接覆盖本地原文件。",
+      automationTitle: "TradeOps 自动化",
+      automationRunOcr: "处理当前 PDF/Word 并识别字段",
+      automationExtract: "从当前文档识别字段",
+      automationValidate: "Validate",
+      automationFillSelected: "Fill selected fields to CRM",
+      automationScanCrm: "Scan CRM fields",
+      automationSaveMapping: "Save mapping",
+      automationExportJson: "Export JSON",
+      automationField: "Field",
+      automationValue: "Extracted value",
+      automationConfidence: "Confidence",
+      automationRisk: "Risk",
+      automationMethod: "Method",
+      automationPage: "Page",
+      automationEvidence: "Evidence",
+      automationStatus: "Status",
+      automationEdit: "Edit",
+      automationFill: "Fill",
+      automationWarnings: "Warnings",
+      automationBlockingIssues: "Blocking issues",
+      automationLowConfidence: "Low confidence",
+      automationHighRisk: "High risk",
+      automationReviewRequired: "Review required",
+      automationReady: "Ready",
+      automationEdited: "Edited",
+      automationNoFields: "No extracted fields yet.",
+      automationNoWarnings: "No warnings.",
+      automationAuditStatus: "Audit status",
+      automationLastExtraction: "Last extraction",
+      automationLastFill: "Last fill",
+      automationNotRun: "Not run",
+      automationFillReport: "Filled {filled}, skipped {skipped}, errors {errors}.",
+      automationExtracted: "已识别 {count} 个字段。",
+      automationValidated: "校验完成：{blocking} 个阻断问题，{warnings} 个提醒。",
+      automationMappingSaved: "映射已保存到本地 IndexedDB。",
+      automationScanEmpty: "没有扫描到可见 CRM 字段。",
+      automationScanned: "已扫描 {count} 个可见 CRM 字段。",
+      automationModulesMissing: "自动化模块未加载，请重新加载扩展。",
+      automationOcrUnavailable: "本地 OCR 模块未加载，请重新加载扩展。",
+      automationOcrUnsupported: "当前文件不支持自动处理。请使用 PDF、DOCX 或图片；旧版 .doc 请另存为 .docx。",
+      automationOcrRunning: "正在本地 OCR：{status} {progress}%",
+      automationOcrComplete: "OCR 完成，置信度 {confidence}%。已识别 {count} 个字段。",
+      automationOcrNoText: "OCR 未识别到可用文字，请更换更清晰图片或手动粘贴文字。",
+      automationConfirmBlocking: "我已人工确认阻断问题，仍要填入选中字段",
+      automationFillBlocked: "存在阻断问题。请修正字段或勾选人工确认。",
+      automationMapToField: "Map to field",
+      automationCrmCandidate: "CRM field",
+      automationSelector: "Selector",
+      automationExported: "Automation JSON exported.",
+      automationDebugTitle: "Extraction Debug",
+      automationShowPdfImages: "显示 PDF 页面图片",
+      automationDownloadPageImages: "下载页面图片",
+      automationUseImagesForAi: "用图片进行 AI 识别",
+      automationDebugRawOcr: "Raw OCR/text",
+      automationDebugRule: "Rule result",
+      automationDebugAi: "AI result",
+      automationDebugPageImages: "PDF page images",
+      automationDebugMerged: "Merged result",
+      automationDebugValidation: "Validation",
+      automationDebugFillable: "CRM-fillable fields",
       chooseFileBeforeSync: "请先选择支持的文件再同步到 CRM。",
       noExtractableContent: "没有可识别的文本。请先上传可提取文字的 PDF、DOCX 或表格；扫描件请先 OCR 后把文字粘贴到这里。",
       noFieldsDetected: "没有识别到可填入 CRM 的字段。请补充包含客户、币种、金额、港口等字段的文本。",
@@ -615,6 +678,7 @@
       navUpload: "Upload",
       navLinks: "Links",
       navDocFlow: "Flow",
+      navAutomation: "Auto",
       navCalculator: "Calc",
       navFinancial: "Tax",
       navDocument: "Docs",
@@ -708,6 +772,66 @@
       exportLibraryMissing: "Table export library is missing. Reload the extension and try again.",
       noCalculatedTable: "There is no calculated table to save.",
       savedWorkbook: "Saved {filename}. Browser security does not allow overwriting the original local file directly.",
+      automationTitle: "TradeOps Automation",
+      automationRunOcr: "Process current PDF/Word and extract fields",
+      automationExtract: "Extract fields from current document",
+      automationValidate: "Validate",
+      automationFillSelected: "Fill selected fields to CRM",
+      automationScanCrm: "Scan CRM fields",
+      automationSaveMapping: "Save mapping",
+      automationExportJson: "Export JSON",
+      automationField: "Field",
+      automationValue: "Extracted value",
+      automationConfidence: "Confidence",
+      automationRisk: "Risk",
+      automationMethod: "Method",
+      automationPage: "Page",
+      automationEvidence: "Evidence",
+      automationStatus: "Status",
+      automationEdit: "Edit",
+      automationFill: "Fill",
+      automationWarnings: "Warnings",
+      automationBlockingIssues: "Blocking issues",
+      automationLowConfidence: "Low confidence",
+      automationHighRisk: "High risk",
+      automationReviewRequired: "Review required",
+      automationReady: "Ready",
+      automationEdited: "Edited",
+      automationNoFields: "No extracted fields yet.",
+      automationNoWarnings: "No warnings.",
+      automationAuditStatus: "Audit status",
+      automationLastExtraction: "Last extraction",
+      automationLastFill: "Last fill",
+      automationNotRun: "Not run",
+      automationFillReport: "Filled {filled}, skipped {skipped}, errors {errors}.",
+      automationExtracted: "Extracted {count} fields.",
+      automationValidated: "Validation complete: {blocking} blocking issues, {warnings} warnings.",
+      automationMappingSaved: "Mapping saved to local IndexedDB.",
+      automationScanEmpty: "No visible CRM fields were found.",
+      automationScanned: "Scanned {count} visible CRM fields.",
+      automationModulesMissing: "Automation modules are not loaded. Reload the extension.",
+      automationOcrUnavailable: "Local OCR module is not loaded. Reload the extension.",
+      automationOcrUnsupported: "The current file cannot be processed automatically. Use PDF, DOCX, or image; save legacy .doc as .docx.",
+      automationOcrRunning: "Running local OCR: {status} {progress}%",
+      automationOcrComplete: "OCR complete with {confidence}% confidence. Extracted {count} fields.",
+      automationOcrNoText: "OCR did not recognize usable text. Use a clearer image or paste text manually.",
+      automationConfirmBlocking: "I reviewed the blocking issues and still want to fill selected fields",
+      automationFillBlocked: "Blocking issues exist. Fix fields or check manual confirmation.",
+      automationMapToField: "Map to field",
+      automationCrmCandidate: "CRM field",
+      automationSelector: "Selector",
+      automationExported: "Automation JSON exported.",
+      automationDebugTitle: "Extraction Debug",
+      automationShowPdfImages: "Show PDF page images",
+      automationDownloadPageImages: "Download page images",
+      automationUseImagesForAi: "Use images for AI extraction",
+      automationDebugRawOcr: "Raw OCR/text",
+      automationDebugRule: "Rule result",
+      automationDebugAi: "AI result",
+      automationDebugPageImages: "PDF page images",
+      automationDebugMerged: "Merged result",
+      automationDebugValidation: "Validation",
+      automationDebugFillable: "CRM-fillable fields",
       chooseFileBeforeSync: "Choose a supported file before syncing to CRM.",
       noExtractableContent: "No recognizable text is available. Upload a text-based PDF, DOCX, or table first; for scanned PDFs, OCR them and paste the text here.",
       noFieldsDetected: "No CRM-ready fields were detected. Add text containing customer, currency, amount, ports, and similar fields.",
@@ -795,6 +919,25 @@
   let docFlowQuickRefToastTimer = null;
   let crmHorizontalScrollbarUpdateFrame = 0;
   let crmHorizontalResizeObserver = null;
+  let automationExtractionResult = null;
+  let automationValidationResult = { blockingIssues: [], warnings: [], normalizedFields: {} };
+  let automationSelectedFields = {};
+  let automationEditedFields = new Set();
+  let automationFieldMappings = {};
+  let automationScanResults = [];
+  let automationLastExtractionTime = "";
+  let automationLastFillResult = null;
+  let automationManualConfirmBlocking = false;
+  let automationStatusMessage = "";
+  let automationStatusType = "info";
+  let automationOcrRunning = false;
+  let automationDebugData = {
+    rawText: "",
+    ruleResult: null,
+    aiResult: null,
+    pageImages: [],
+    mergedResult: null
+  };
 
   class DocFlowMatrixStorage {
     constructor() {
@@ -1609,6 +1752,7 @@
       .workbench.is-collapsed .drop-zone,
       .workbench.is-collapsed .quick-links,
       .workbench.is-collapsed .doc-flow,
+      .workbench.is-collapsed .automation-hub,
       .workbench.is-collapsed .file-history,
       .workbench.is-collapsed .price-calculator,
       .workbench.is-collapsed .document-area,
@@ -2804,6 +2948,346 @@
         }
       }
 
+      .automation-hub {
+        flex: 0 0 auto;
+        margin: 0 16px 12px;
+        background: #ffffff;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .automation-hub__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .automation-hub__title {
+        margin: 0;
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 850;
+        line-height: 1.3;
+      }
+
+      .automation-hub__body {
+        display: grid;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .automation-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .automation-button {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 850;
+        line-height: 1.2;
+      }
+
+      .automation-button--primary {
+        border-color: #0f766e;
+        background: #0f766e;
+        color: #ffffff;
+      }
+
+      .automation-button:hover {
+        border-color: #0f766e;
+        background: #ecfdf5;
+        color: #0f3f3a;
+      }
+
+      .automation-button--primary:hover {
+        background: #115e59;
+        color: #ffffff;
+      }
+
+      .automation-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .automation-table-wrap {
+        overflow-x: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+      }
+
+      .automation-table {
+        width: 100%;
+        min-width: 1040px;
+        border-collapse: collapse;
+        background: #ffffff;
+        font-size: 12px;
+      }
+
+      .automation-table th,
+      .automation-table td {
+        padding: 7px 8px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #0f172a;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      .automation-table th {
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 850;
+      }
+
+      .automation-table tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .automation-table tr.is-low-confidence td {
+        background: #fffbeb;
+      }
+
+      .automation-table tr.is-high-risk td {
+        box-shadow: inset 3px 0 0 #dc2626;
+      }
+
+      .automation-table tr.is-conflict td,
+      .automation-table tr.is-invalid-risk td {
+        background: #fef2f2;
+      }
+
+      .automation-evidence {
+        max-width: 220px;
+        color: #475569;
+        font-size: 11px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .automation-value-input,
+      .automation-map-select {
+        width: 100%;
+        min-width: 130px;
+        height: 30px;
+        padding: 0 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        font: inherit;
+        font-size: 12px;
+      }
+
+      .automation-value-input:focus,
+      .automation-map-select:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+        outline: none;
+      }
+
+      .automation-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        color: #334155;
+        font-size: 11px;
+        font-weight: 850;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .automation-pill--high {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .automation-pill--review {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .automation-panels {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .automation-panel {
+        min-width: 0;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #f8fafc;
+      }
+
+      .automation-panel__title {
+        margin: 0 0 6px;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 850;
+        line-height: 1.3;
+      }
+
+      .automation-list {
+        display: grid;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .automation-list li {
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .automation-list .is-blocking {
+        color: #991b1b;
+        font-weight: 750;
+      }
+
+      .automation-confirm {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: #7f1d1d;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.35;
+      }
+
+      .automation-status-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .automation-status-cell {
+        min-width: 0;
+        padding: 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      .automation-status-label {
+        display: block;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.3;
+      }
+
+      .automation-status-value {
+        display: block;
+        margin-top: 3px;
+        color: #0f172a;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .automation-empty {
+        margin: 0;
+        padding: 10px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 6px;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .automation-debug {
+        border: 1px dashed #94a3b8;
+        border-radius: 6px;
+        background: #f8fafc;
+      }
+
+      .automation-debug summary {
+        cursor: pointer;
+        padding: 8px 10px;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .automation-debug__body {
+        display: grid;
+        gap: 8px;
+        padding: 0 10px 10px;
+      }
+
+      .automation-debug-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .automation-debug pre {
+        max-height: 220px;
+        margin: 0;
+        padding: 8px;
+        overflow: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 11px;
+        line-height: 1.35;
+        white-space: pre-wrap;
+      }
+
+      .automation-debug-images {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 8px;
+      }
+
+      .automation-debug-image {
+        margin: 0;
+        padding: 6px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      .automation-debug-image img {
+        display: block;
+        width: 100%;
+        max-height: 260px;
+        object-fit: contain;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        background: #ffffff;
+      }
+
+      .automation-debug-image figcaption {
+        margin-top: 5px;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 750;
+        line-height: 1.3;
+      }
+
       .price-calculator {
         flex: 0 0 auto;
         margin: 0 16px 12px;
@@ -3283,6 +3767,31 @@
         box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
       }
 
+      .ocr-text-extract {
+        margin: 12px 0;
+        padding: 12px 14px;
+        border: 1px solid #dbe3ef;
+        border-radius: 6px;
+        background: #f8fafc;
+      }
+
+      .ocr-text-extract p {
+        margin: 0 0 8px;
+        color: #334155;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .ocr-text-extract pre {
+        margin: 0;
+        color: #0f172a;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
       .preview-scale-frame {
         position: relative;
         flex: 1 1 auto;
@@ -3665,7 +4174,9 @@
         .doc-flow-grid,
         .doc-flow-nav,
         .doc-flow-footer,
-        .batch-summary {
+        .batch-summary,
+        .automation-panels,
+        .automation-status-grid {
           grid-template-columns: 1fr;
         }
 
@@ -3702,6 +4213,7 @@
         <button class="section-nav__button" type="button" data-section-target="upload" data-i18n="navUpload" data-i18n-title="navUpload" title="${t("navUpload")}">${t("navUpload")}</button>
         <button class="section-nav__button" type="button" data-section-target="links" data-i18n="navLinks" data-i18n-title="navLinks" title="${t("navLinks")}">${t("navLinks")}</button>
         <button class="section-nav__button" type="button" data-section-target="doc-flow" data-i18n="navDocFlow" data-i18n-title="navDocFlow" title="${t("navDocFlow")}">${t("navDocFlow")}</button>
+        <button class="section-nav__button" type="button" data-section-target="automation" data-i18n="navAutomation" data-i18n-title="navAutomation" title="${t("navAutomation")}">${t("navAutomation")}</button>
         <button class="section-nav__button" type="button" data-section-target="calculator" data-i18n="navCalculator" data-i18n-title="navCalculator" title="${t("navCalculator")}">${t("navCalculator")}</button>
         <button class="section-nav__button" type="button" data-section-target="financial" data-i18n="navFinancial" data-i18n-title="navFinancial" title="${t("navFinancial")}">${t("navFinancial")}</button>
         <button class="section-nav__button" type="button" data-section-target="document" data-i18n="navDocument" data-i18n-title="navDocument" title="${t("navDocument")}">${t("navDocument")}</button>
@@ -3763,6 +4275,13 @@
             </div>
           </aside>
           <div class="doc-flow-modal" data-doc-flow-modal hidden></div>
+        </section>
+
+        <section class="automation-hub" data-section="automation">
+          <div class="automation-hub__header">
+            <h2 class="automation-hub__title" data-i18n="automationTitle">${t("automationTitle")}</h2>
+          </div>
+          <div class="automation-hub__body" data-automation-root></div>
         </section>
 
         <section class="file-history" data-i18n-aria-label="loadedFiles" aria-label="${t("loadedFiles")}">
@@ -3877,6 +4396,7 @@
     const sectionNav = shadowRoot.querySelector(".section-nav");
     const languageButton = shadowRoot.querySelector(".language-button");
     const docFlowSection = shadowRoot.querySelector(".doc-flow");
+    const automationSection = shadowRoot.querySelector(".automation-hub");
 
     resizeHandle.addEventListener("pointerdown", startSidebarResize);
     resizeHandle.addEventListener("keydown", handleResizeKeydown);
@@ -3919,6 +4439,9 @@
     docFlowSection.addEventListener("input", handleDocFlowInput);
     docFlowSection.addEventListener("change", handleDocFlowChange);
     docFlowSection.addEventListener("submit", handleDocFlowSubmit);
+    automationSection.addEventListener("click", handleAutomationClick);
+    automationSection.addEventListener("input", handleAutomationInput);
+    automationSection.addEventListener("change", handleAutomationChange);
     calculatorFileButtons.forEach((button) => {
       button.addEventListener("click", handleCalculateCurrentTableClick);
     });
@@ -3950,6 +4473,8 @@
     });
     renderQuickLinks();
     loadBookmarkFolders();
+    renderAutomationHub();
+    loadAutomationMappings();
     initializeDocFlowMatrix();
     updatePriceCalculator();
   }
@@ -4051,6 +4576,7 @@
     renderBookmarkFolders();
     updateQuickLinkFormMode();
     renderLoadedFiles();
+    renderAutomationHub();
     renderDocFlowForCurrentLanguage();
   }
 
@@ -6740,6 +7266,7 @@
     selectedFile = fileEntry.file;
     updateDocumentMeta(selectedFile);
     renderLoadedFiles();
+    renderAutomationHub();
     renderSelectedFile(selectedFile, options);
   }
 
@@ -8281,6 +8808,7 @@
     updateDocumentMetaForEmptyState();
     clearEditor();
     renderLoadedFiles();
+    renderAutomationHub();
   }
 
   function updateDocumentMetaForEmptyState() {
@@ -8866,6 +9394,1170 @@
     }).filter(Boolean);
     const text = normalizeText(clone.textContent);
     return normalizeText([text, rows.join("\n")].filter(Boolean).join("\n"));
+  }
+
+  function renderAutomationHub() {
+    const root = shadowRoot?.querySelector("[data-automation-root]");
+    if (!root) {
+      return;
+    }
+
+    root.innerHTML = `
+      ${buildAutomationStatusHtml()}
+      <div class="automation-actions">
+        <button class="automation-button automation-button--primary" type="button" data-automation-ocr data-i18n="automationRunOcr"${canRunAutomationOcr() ? "" : " disabled"}>${escapeHtml(t("automationRunOcr"))}</button>
+        <button class="automation-button automation-button--primary" type="button" data-automation-extract data-i18n="automationExtract">${escapeHtml(t("automationExtract"))}</button>
+        <button class="automation-button" type="button" data-automation-validate data-i18n="automationValidate"${automationExtractionResult ? "" : " disabled"}>${escapeHtml(t("automationValidate"))}</button>
+        <button class="automation-button" type="button" data-automation-fill data-i18n="automationFillSelected"${canFillAutomationFields() ? "" : " disabled"}>${escapeHtml(t("automationFillSelected"))}</button>
+        <button class="automation-button" type="button" data-automation-scan data-i18n="automationScanCrm">${escapeHtml(t("automationScanCrm"))}</button>
+        <button class="automation-button" type="button" data-automation-save-mapping data-i18n="automationSaveMapping">${escapeHtml(t("automationSaveMapping"))}</button>
+        <button class="automation-button" type="button" data-automation-export data-i18n="automationExportJson">${escapeHtml(t("automationExportJson"))}</button>
+      </div>
+      ${buildAutomationReviewTableHtml()}
+      ${buildAutomationConfirmHtml()}
+      ${buildAutomationWarningsHtml()}
+      ${buildAutomationAuditHtml()}
+      ${buildAutomationMappingHtml()}
+      ${buildAutomationDebugHtml()}
+    `;
+  }
+
+  function buildAutomationStatusHtml() {
+    if (!automationStatusMessage) {
+      return "";
+    }
+
+    const statusClass = automationStatusType === "success"
+      ? " status--success"
+      : automationStatusType === "error"
+        ? " status--error"
+        : "";
+    return `<p class="status${statusClass}">${escapeHtml(automationStatusMessage)}</p>`;
+  }
+
+  function buildAutomationReviewTableHtml() {
+    const fieldEntries = getAutomationFieldEntries();
+    if (!fieldEntries.length) {
+      return `<p class="automation-empty">${escapeHtml(t("automationNoFields"))}</p>`;
+    }
+
+    const rows = fieldEntries.map(([fieldKey, field]) => {
+      const confidence = Number(field.confidence) || 0;
+      const risk = getAutomationRisk(fieldKey);
+      const isHighRisk = risk === "high";
+      const isLowConfidence = confidence < (isHighRisk ? 0.8 : 0.65);
+      const hasBlockingIssue = hasAutomationBlockingIssue(fieldKey);
+      const hasConflict = Boolean(field.conflict);
+      const status = getAutomationFieldStatus(fieldKey, field);
+      const rowClass = [
+        isLowConfidence ? "is-low-confidence" : "",
+        isHighRisk ? "is-high-risk" : "",
+        hasConflict ? "is-conflict" : "",
+        isHighRisk && (hasBlockingIssue || hasConflict) ? "is-invalid-risk" : ""
+      ].filter(Boolean).join(" ");
+      const method = field.method || field.sourceRule || "";
+      const pageNo = field.pageNo || "";
+      const evidence = field.evidence || field.sourceText || "";
+
+      return `
+        <tr class="${rowClass}">
+          <td>${escapeHtml(getAutomationFieldLabel(fieldKey))}</td>
+          <td>${escapeHtml(String(field.value || ""))}</td>
+          <td>${escapeHtml(formatAutomationConfidence(confidence))}</td>
+          <td>${buildAutomationRiskBadge(risk)}</td>
+          <td>${escapeHtml(method)}</td>
+          <td>${escapeHtml(pageNo || "--")}</td>
+          <td><div class="automation-evidence">${escapeHtml(evidence || "--")}</div></td>
+          <td>${escapeHtml(status)}</td>
+          <td>
+            <input class="automation-value-input" type="text" value="${escapeHtml(field.value || "")}" data-automation-field-value="${escapeHtml(fieldKey)}" aria-label="${escapeHtml(`${t("automationEdit")} ${getAutomationFieldLabel(fieldKey)}`)}">
+          </td>
+          <td>
+            <input type="checkbox" data-automation-field-check="${escapeHtml(fieldKey)}"${automationSelectedFields[fieldKey] === false ? "" : " checked"} aria-label="${escapeHtml(`${t("automationFill")} ${getAutomationFieldLabel(fieldKey)}`)}">
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <div class="automation-table-wrap">
+        <table class="automation-table">
+          <thead>
+            <tr>
+              <th>${escapeHtml(t("automationField"))}</th>
+              <th>${escapeHtml(t("automationValue"))}</th>
+              <th>${escapeHtml(t("automationConfidence"))}</th>
+              <th>${escapeHtml(t("automationRisk"))}</th>
+              <th>${escapeHtml(t("automationMethod"))}</th>
+              <th>${escapeHtml(t("automationPage"))}</th>
+              <th>${escapeHtml(t("automationEvidence"))}</th>
+              <th>${escapeHtml(t("automationStatus"))}</th>
+              <th>${escapeHtml(t("automationEdit"))}</th>
+              <th>${escapeHtml(t("automationFill"))}</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function buildAutomationConfirmHtml() {
+    const hasBlockingIssues = (automationValidationResult.blockingIssues || []).length > 0;
+    if (!hasBlockingIssues) {
+      return "";
+    }
+
+    return `
+      <label class="automation-confirm">
+        <input type="checkbox" data-automation-manual-confirm${automationManualConfirmBlocking ? " checked" : ""}>
+        <span>${escapeHtml(t("automationConfirmBlocking"))}</span>
+      </label>
+    `;
+  }
+
+  function buildAutomationWarningsHtml() {
+    const blockingIssues = automationValidationResult.blockingIssues || [];
+    const warnings = automationValidationResult.warnings || [];
+    const warningItems = warnings.length
+      ? warnings.map((warning) => `<li>${escapeHtml(formatAutomationIssue(warning))}</li>`).join("")
+      : `<li>${escapeHtml(t("automationNoWarnings"))}</li>`;
+    const blockingItems = blockingIssues.length
+      ? blockingIssues.map((issue) => `<li class="is-blocking">${escapeHtml(formatAutomationIssue(issue))}</li>`).join("")
+      : `<li>${escapeHtml(t("automationNoWarnings"))}</li>`;
+
+    return `
+      <div class="automation-panels">
+        <section class="automation-panel">
+          <h3 class="automation-panel__title">${escapeHtml(t("automationBlockingIssues"))}</h3>
+          <ul class="automation-list">${blockingItems}</ul>
+        </section>
+        <section class="automation-panel">
+          <h3 class="automation-panel__title">${escapeHtml(t("automationWarnings"))}</h3>
+          <ul class="automation-list">${warningItems}</ul>
+        </section>
+      </div>
+    `;
+  }
+
+  function buildAutomationAuditHtml() {
+    const fillText = automationLastFillResult
+      ? t("automationFillReport", {
+        filled: automationLastFillResult.filled?.length || 0,
+        skipped: automationLastFillResult.skipped?.length || 0,
+        errors: automationLastFillResult.errors?.length || 0
+      })
+      : t("automationNotRun");
+
+    return `
+      <section class="automation-panel">
+        <h3 class="automation-panel__title">${escapeHtml(t("automationAuditStatus"))}</h3>
+        <div class="automation-status-grid">
+          <div class="automation-status-cell">
+            <span class="automation-status-label">${escapeHtml(t("automationLastExtraction"))}</span>
+            <span class="automation-status-value">${escapeHtml(automationLastExtractionTime ? formatAutomationTimestamp(automationLastExtractionTime) : t("automationNotRun"))}</span>
+          </div>
+          <div class="automation-status-cell">
+            <span class="automation-status-label">${escapeHtml(t("automationLastFill"))}</span>
+            <span class="automation-status-value">${escapeHtml(fillText)}</span>
+          </div>
+          <div class="automation-status-cell">
+            <span class="automation-status-label">SC NO.</span>
+            <span class="automation-status-value">${escapeHtml(getAutomationCurrentScNo() || "--")}</span>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function buildAutomationMappingHtml() {
+    if (!automationScanResults.length) {
+      return "";
+    }
+
+    const rows = automationScanResults.map((candidate, index) => {
+      const selectedFieldKey = getMappedFieldForCandidate(candidate);
+      const crmField = [
+        candidate.labelGuess,
+        candidate.name ? `name=${candidate.name}` : "",
+        candidate.id ? `id=${candidate.id}` : "",
+        candidate.placeholder ? `placeholder=${candidate.placeholder}` : "",
+        candidate.title ? `title=${candidate.title}` : ""
+      ].filter(Boolean).join(" | ");
+
+      return `
+        <tr>
+          <td>
+            <select class="automation-map-select" data-automation-map-candidate="${index}" aria-label="${escapeHtml(t("automationMapToField"))}">
+              ${buildAutomationFieldOptionsHtml(selectedFieldKey)}
+            </select>
+          </td>
+          <td>${escapeHtml(crmField || candidate.tagName || "")}</td>
+          <td>${escapeHtml(candidate.selectorCandidate || "")}</td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <div class="automation-table-wrap">
+        <table class="automation-table">
+          <thead>
+            <tr>
+              <th>${escapeHtml(t("automationMapToField"))}</th>
+              <th>${escapeHtml(t("automationCrmCandidate"))}</th>
+              <th>${escapeHtml(t("automationSelector"))}</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function buildAutomationDebugHtml() {
+    if (!isAutomationDebugEnabled()) {
+      return "";
+    }
+
+    const sections = [
+      [t("automationDebugRawOcr"), automationDebugData.rawText || ""],
+      [t("automationDebugRule"), automationDebugData.ruleResult || null],
+      [t("automationDebugAi"), automationDebugData.aiResult || null],
+      [t("automationDebugMerged"), automationDebugData.mergedResult || automationExtractionResult || null],
+      [t("automationDebugValidation"), automationValidationResult || null],
+      [t("automationDebugFillable"), getAutomationSelectedFieldsForFill()]
+    ];
+
+    return `
+      <details class="automation-debug">
+        <summary>${escapeHtml(t("automationDebugTitle"))}</summary>
+        <div class="automation-debug__body">
+          <div class="automation-debug-actions">
+            <button class="automation-button" type="button" data-automation-show-pdf-images>${escapeHtml(t("automationShowPdfImages"))}</button>
+            <button class="automation-button" type="button" data-automation-download-page-images${(automationDebugData.pageImages || []).length ? "" : " disabled"}>${escapeHtml(t("automationDownloadPageImages"))}</button>
+            <button class="automation-button" type="button" data-automation-use-images-ai${(automationDebugData.pageImages || []).length ? "" : " disabled"}>${escapeHtml(t("automationUseImagesForAi"))}</button>
+          </div>
+          ${buildAutomationDebugPageImagesHtml()}
+          ${sections.map(([label, value]) => `
+            <section>
+              <h3 class="automation-panel__title">${escapeHtml(label)}</h3>
+              <pre>${escapeHtml(formatAutomationDebugValue(value))}</pre>
+            </section>
+          `).join("")}
+        </div>
+      </details>
+    `;
+  }
+
+  function buildAutomationDebugPageImagesHtml() {
+    const pageImages = automationDebugData.pageImages || [];
+    if (!pageImages.length) {
+      return "";
+    }
+
+    const figures = pageImages.map((image, index) => {
+      const dataUrl = image.dataUrl || image.image || "";
+      if (!dataUrl) {
+        return "";
+      }
+      const pageNo = image.pageNo || index + 1;
+      const size = image.width && image.height ? ` · ${image.width} x ${image.height}` : "";
+      return `
+        <figure class="automation-debug-image">
+          <img src="${escapeHtml(dataUrl)}" alt="${escapeHtml(`${t("automationPage")} ${pageNo}`)}">
+          <figcaption>${escapeHtml(`${t("automationPage")} ${pageNo}${size}`)}</figcaption>
+        </figure>
+      `;
+    }).join("");
+
+    return `
+      <section>
+        <h3 class="automation-panel__title">${escapeHtml(t("automationDebugPageImages"))}</h3>
+        <div class="automation-debug-images">${figures}</div>
+      </section>
+    `;
+  }
+
+  function buildAutomationFieldOptionsHtml(selectedFieldKey) {
+    const fields = getAutomationCanonicalFields();
+    return [
+      `<option value=""></option>`,
+      ...fields.map((fieldKey) => {
+        const selected = selectedFieldKey === fieldKey ? " selected" : "";
+        return `<option value="${escapeHtml(fieldKey)}"${selected}>${escapeHtml(getAutomationFieldLabel(fieldKey))}</option>`;
+      })
+    ].join("");
+  }
+
+  function handleAutomationClick(event) {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) {
+      return;
+    }
+
+    if (target.closest("[data-automation-ocr]")) {
+      handleAutomationOcrClick();
+      return;
+    }
+    if (target.closest("[data-automation-extract]")) {
+      handleAutomationExtractClick();
+      return;
+    }
+    if (target.closest("[data-automation-validate]")) {
+      handleAutomationValidateClick();
+      return;
+    }
+    if (target.closest("[data-automation-fill]")) {
+      handleAutomationFillClick();
+      return;
+    }
+    if (target.closest("[data-automation-scan]")) {
+      handleAutomationScanClick();
+      return;
+    }
+    if (target.closest("[data-automation-save-mapping]")) {
+      handleAutomationSaveMappingClick();
+      return;
+    }
+    if (target.closest("[data-automation-export]")) {
+      handleAutomationExportClick();
+      return;
+    }
+    if (target.closest("[data-automation-show-pdf-images]")) {
+      handleAutomationShowPdfImagesClick();
+      return;
+    }
+    if (target.closest("[data-automation-download-page-images]")) {
+      handleAutomationDownloadPageImagesClick();
+      return;
+    }
+    if (target.closest("[data-automation-use-images-ai]")) {
+      handleAutomationUseImagesForAiClick();
+    }
+  }
+
+  function handleAutomationInput(event) {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-automation-field-value]")) {
+      return;
+    }
+
+    updateAutomationFieldValue(input.dataset.automationFieldValue, input.value);
+    validateAutomationState();
+    updateAutomationFillButtonState();
+  }
+
+  function handleAutomationChange(event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) {
+      return;
+    }
+
+    if (target.matches("[data-automation-field-check]")) {
+      automationSelectedFields[target.dataset.automationFieldCheck] = target.checked;
+      updateAutomationFillButtonState();
+      return;
+    }
+
+    if (target.matches("[data-automation-manual-confirm]")) {
+      automationManualConfirmBlocking = target.checked;
+      updateAutomationFillButtonState();
+      return;
+    }
+
+    if (target.matches("[data-automation-field-value]")) {
+      updateAutomationFieldValue(target.dataset.automationFieldValue, target.value);
+      validateAutomationState();
+      renderAutomationHub();
+      return;
+    }
+
+    if (target.matches("[data-automation-map-candidate]")) {
+      updateAutomationMappingFromCandidate(Number(target.dataset.automationMapCandidate), target.value);
+    }
+  }
+
+  async function handleAutomationExtractClick() {
+    if (!hasAutomationModules()) {
+      setAutomationStatus(t("automationModulesMissing"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    const text = getCurrentDocumentPlainText();
+    if (!text) {
+      setAutomationStatus(t("noExtractableContent"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    await runAutomationExtractionFromText(text, "extract");
+  }
+
+  async function handleAutomationOcrClick() {
+    if (!canProcessAutomationCurrentFile()) {
+      setAutomationStatus(t("automationOcrUnsupported"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    automationOcrRunning = true;
+    setAutomationStatus(t("automationOcrRunning", { status: "initializing", progress: 0 }));
+    renderAutomationHub();
+
+    try {
+      const documentResult = await processAutomationCurrentFile({
+        onProgress: (message) => {
+          setAutomationStatus(t("automationOcrRunning", {
+            status: message.status || "processing",
+            progress: Math.round((Number(message.progress) || 0) * 100)
+          }));
+          renderAutomationHub();
+        }
+      });
+
+      if (!documentResult.text) {
+        setAutomationStatus(t("automationOcrNoText"), "error");
+        return;
+      }
+
+      insertAutomationOcrText(documentResult.text, documentResult);
+      await runAutomationExtractionFromText(getCurrentDocumentPlainText(), "ocr_extract", {
+        processingMethod: documentResult.method,
+        ocrConfidence: documentResult.confidence,
+        ocrLanguage: documentResult.language,
+        sourceName: documentResult.sourceName,
+        pageImages: documentResult.pageImages || [],
+        warnings: documentResult.warnings || []
+      });
+      setAutomationStatus(t("automationOcrComplete", {
+        confidence: Math.round(documentResult.confidence),
+        count: Object.keys(automationExtractionResult?.fields || {}).length
+      }), "success");
+    } catch (error) {
+      setAutomationStatus(error.message || t("automationOcrUnavailable"), "error");
+    } finally {
+      automationOcrRunning = false;
+      renderAutomationHub();
+    }
+  }
+
+  async function runAutomationExtractionFromText(text, userAction, metadata = {}) {
+    const extractInput = {
+      text,
+      pageImages: metadata.pageImages || []
+    };
+    automationExtractionResult = window.CrmAutomationExtractor.extractAutomationFieldsAsync
+      ? await window.CrmAutomationExtractor.extractAutomationFieldsAsync(extractInput, {
+        mode: metadata.extractionMode
+      })
+      : window.CrmAutomationExtractor.extractAutomationFields(text);
+    automationEditedFields = new Set();
+    automationManualConfirmBlocking = false;
+    automationLastExtractionTime = new Date().toISOString();
+    validateAutomationState();
+    initializeAutomationSelectedFields();
+    updateAutomationDebugData(text, automationExtractionResult, metadata);
+    setAutomationStatus(t("automationExtracted", { count: Object.keys(automationExtractionResult.fields || {}).length }), "success");
+    renderAutomationHub();
+
+    await recordAutomationExtractionAudit(userAction, metadata);
+  }
+
+  function handleAutomationValidateClick() {
+    if (!automationExtractionResult) {
+      return;
+    }
+
+    validateAutomationState();
+    setAutomationStatus(t("automationValidated", {
+      blocking: automationValidationResult.blockingIssues.length,
+      warnings: automationValidationResult.warnings.length
+    }), automationValidationResult.blockingIssues.length ? "error" : "success");
+    renderAutomationHub();
+  }
+
+  async function handleAutomationFillClick() {
+    if (!automationExtractionResult || !hasAutomationModules()) {
+      setAutomationStatus(t("automationModulesMissing"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    validateAutomationState();
+    if (!canFillAutomationFields()) {
+      setAutomationStatus(t("automationFillBlocked"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    const selectedFields = getAutomationSelectedFieldsForFill();
+    const fillButton = shadowRoot.querySelector("[data-automation-fill]");
+    if (fillButton) {
+      fillButton.disabled = true;
+    }
+
+    try {
+      automationLastFillResult = await fillAutomationFieldsInBestContext(selectedFields, getAutomationCurrentMapping());
+      setAutomationStatus(t("automationFillReport", {
+        filled: automationLastFillResult.filled.length,
+        skipped: automationLastFillResult.skipped.length,
+        errors: automationLastFillResult.errors.length
+      }), automationLastFillResult.errors.length ? "error" : "success");
+      renderAutomationHub();
+      await recordAutomationFillAudit(selectedFields);
+    } catch (error) {
+      setAutomationStatus(error.message || t("crmAutofillFailed"), "error");
+      renderAutomationHub();
+    }
+  }
+
+  function handleAutomationScanClick() {
+    if (!window.CrmDomAdapter?.scanVisibleCrmFields) {
+      setAutomationStatus(t("automationModulesMissing"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    automationScanResults = window.CrmDomAdapter.scanVisibleCrmFields();
+    setAutomationStatus(
+      automationScanResults.length
+        ? t("automationScanned", { count: automationScanResults.length })
+        : t("automationScanEmpty"),
+      automationScanResults.length ? "success" : "error"
+    );
+    renderAutomationHub();
+  }
+
+  async function handleAutomationSaveMappingClick() {
+    if (!window.CrmAutomationAudit?.saveFieldMappings) {
+      setAutomationStatus(t("automationModulesMissing"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    try {
+      automationFieldMappings = await window.CrmAutomationAudit.saveFieldMappings(automationFieldMappings);
+      setAutomationStatus(t("automationMappingSaved"), "success");
+    } catch (error) {
+      setAutomationStatus(error.message || t("automationModulesMissing"), "error");
+    }
+    renderAutomationHub();
+  }
+
+  function handleAutomationExportClick() {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      extraction: automationExtractionResult,
+      validation: automationValidationResult,
+      fieldMappings: automationFieldMappings,
+      lastFillResult: automationLastFillResult
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `tradeops-automation-${formatDownloadTimestamp(new Date())}.json`;
+    link.style.display = "none";
+    document.documentElement.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 500);
+    setAutomationStatus(t("automationExported"), "success");
+    renderAutomationHub();
+  }
+
+  async function handleAutomationShowPdfImagesClick() {
+    if (!selectedFile || !isPdf(selectedFile) || !window.CrmDocumentImagePreprocessor?.convertPdfToPageImages) {
+      setAutomationStatus(t("automationOcrUnsupported"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    automationOcrRunning = true;
+    setAutomationStatus(t("automationOcrRunning", { status: "rendering pdf page image", progress: 0 }));
+    renderAutomationHub();
+
+    try {
+      const result = await window.CrmDocumentImagePreprocessor.convertPdfToPageImages(selectedFile, {
+        scale: 2,
+        maxPages: 8,
+        onProgress: (message) => {
+          setAutomationStatus(t("automationOcrRunning", {
+            status: message.status || "rendering",
+            progress: Math.round((Number(message.progress) || 0) * 100)
+          }));
+          renderAutomationHub();
+        }
+      });
+      automationDebugData = {
+        ...automationDebugData,
+        pageImages: normalizeAutomationPageImages(result.pages || [])
+      };
+      setAutomationStatus(t("automationScanned", { count: automationDebugData.pageImages.length }), "success");
+    } catch (error) {
+      setAutomationStatus(error.message || t("automationOcrUnavailable"), "error");
+    } finally {
+      automationOcrRunning = false;
+      renderAutomationHub();
+    }
+  }
+
+  function handleAutomationDownloadPageImagesClick() {
+    const pageImages = automationDebugData.pageImages || [];
+    pageImages.forEach((image, index) => {
+      const dataUrl = image.dataUrl || image.imageDataUrl || "";
+      if (!dataUrl) {
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${(selectedFile?.name || "pdf-page").replace(/\.pdf$/i, "")}-page-${image.pageNo || index + 1}.png`;
+      link.style.display = "none";
+      document.documentElement.appendChild(link);
+      link.click();
+      link.remove();
+    });
+  }
+
+  async function handleAutomationUseImagesForAiClick() {
+    const pageImages = automationDebugData.pageImages || [];
+    if (!pageImages.length) {
+      setAutomationStatus(t("automationOcrUnsupported"), "error");
+      renderAutomationHub();
+      return;
+    }
+    if (!window.CrmVisionExtractionProvider?.isConfigured?.()) {
+      setAutomationStatus(window.CrmVisionExtractionProvider?.CONFIDENTIALITY_WARNING || t("automationModulesMissing"), "error");
+      renderAutomationHub();
+      return;
+    }
+
+    await runAutomationExtractionFromText(getCurrentDocumentPlainText(), "vision_image_extract", {
+      extractionMode: "vision_ai",
+      pageImages
+    });
+  }
+
+  async function loadAutomationMappings() {
+    if (!window.CrmAutomationAudit?.getAllFieldMappings) {
+      return;
+    }
+
+    try {
+      automationFieldMappings = await window.CrmAutomationAudit.getAllFieldMappings();
+      renderAutomationHub();
+    } catch (error) {
+      automationFieldMappings = {};
+    }
+  }
+
+  function validateAutomationState() {
+    if (!automationExtractionResult || !window.CrmAutomationValidator?.validateAutomationExtraction) {
+      automationValidationResult = { blockingIssues: [], warnings: [], normalizedFields: {} };
+      return automationValidationResult;
+    }
+
+    automationValidationResult = window.CrmAutomationValidator.validateAutomationExtraction(automationExtractionResult, {
+      requiredKeys: ["scNo", "customerName", "currency", "totalAmount"]
+    });
+    return automationValidationResult;
+  }
+
+  function initializeAutomationSelectedFields() {
+    automationSelectedFields = Object.entries(automationExtractionResult?.fields || {}).reduce((selected, [fieldKey, field]) => {
+      selected[fieldKey] = shouldDefaultCheckAutomationField(fieldKey, field);
+      return selected;
+    }, {});
+  }
+
+  function shouldDefaultCheckAutomationField(fieldKey, field) {
+    const isHighRisk = getAutomationRisk(fieldKey) === "high";
+    const confidence = Number(field?.confidence) || 0;
+    if (hasAutomationBlockingIssue(fieldKey)) {
+      return false;
+    }
+    if (isHighRisk && (field?.conflict || confidence < 0.8)) {
+      return false;
+    }
+    return true;
+  }
+
+  function hasAutomationBlockingIssue(fieldKey) {
+    return (automationValidationResult.blockingIssues || []).some((issue) => issue.fieldKey === fieldKey);
+  }
+
+  function updateAutomationDebugData(rawText, extractionResult, metadata = {}) {
+    automationDebugData = {
+      rawText: rawText || extractionResult?.rawText || "",
+      ruleResult: extractionResult?.ruleResult || null,
+      aiResult: extractionResult?.aiResult || null,
+      pageImages: normalizeAutomationPageImages(metadata.pageImages || []),
+      mergedResult: extractionResult || null
+    };
+  }
+
+  function normalizeAutomationPageImages(pageImages) {
+    return (pageImages || []).map((image, index) => ({
+      ...image,
+      pageNo: image.pageNo || index + 1,
+      dataUrl: image.dataUrl || image.imageDataUrl || image.image || "",
+      imageDataUrl: image.imageDataUrl || image.dataUrl || image.image || ""
+    })).filter((image) => image.dataUrl || image.imageDataUrl);
+  }
+
+  function updateAutomationFieldValue(fieldKey, value) {
+    if (!fieldKey || !automationExtractionResult?.fields?.[fieldKey]) {
+      return;
+    }
+
+    automationExtractionResult.fields[fieldKey] = {
+      ...automationExtractionResult.fields[fieldKey],
+      value,
+      confidence: 1,
+      method: "manual"
+    };
+    automationEditedFields.add(fieldKey);
+  }
+
+  function updateAutomationMappingFromCandidate(candidateIndex, fieldKey) {
+    const candidate = automationScanResults[candidateIndex];
+    if (!candidate || !fieldKey) {
+      return;
+    }
+
+    const existing = automationFieldMappings[fieldKey] || {};
+    automationFieldMappings = {
+      ...automationFieldMappings,
+      [fieldKey]: {
+        selectors: uniqueAutomationStrings([candidate.selectorCandidate, ...(existing.selectors || [])]),
+        labelHints: uniqueAutomationStrings([candidate.labelGuess, candidate.placeholder, ...(existing.labelHints || [])]),
+        crmFieldName: candidate.name || candidate.id || candidate.placeholder || candidate.labelGuess || existing.crmFieldName || "",
+        lastSelectorUsed: candidate.selectorCandidate,
+        updatedAt: new Date().toISOString()
+      }
+    };
+  }
+
+  function getAutomationFieldEntries() {
+    const fields = automationExtractionResult?.fields || {};
+    const normalizedFields = automationValidationResult?.normalizedFields || {};
+    return Object.keys(fields).map((fieldKey) => {
+      return [fieldKey, {
+        ...fields[fieldKey],
+        ...(normalizedFields[fieldKey] || {})
+      }];
+    });
+  }
+
+  function getAutomationSelectedFieldsForFill() {
+    const normalizedFields = automationValidationResult.normalizedFields || {};
+    return Object.entries(normalizedFields).reduce((selected, [fieldKey, field]) => {
+      if (automationSelectedFields[fieldKey] !== false && field?.value) {
+        selected[fieldKey] = {
+          value: field.value
+        };
+      }
+      return selected;
+    }, {});
+  }
+
+  function canFillAutomationFields() {
+    if (!automationExtractionResult || !window.CrmDomAdapter?.fillCrmFields) {
+      return false;
+    }
+
+    const selectedCount = Object.keys(getAutomationSelectedFieldsForFill()).length;
+    if (selectedCount === 0) {
+      return false;
+    }
+
+    const blockingIssues = automationValidationResult.blockingIssues || [];
+    return blockingIssues.length === 0 || automationManualConfirmBlocking;
+  }
+
+  function canRunAutomationOcr() {
+    return Boolean(
+      !automationOcrRunning
+      && selectedFile
+      && canProcessAutomationCurrentFile()
+    );
+  }
+
+  function canProcessAutomationCurrentFile() {
+    return Boolean(
+      selectedFile
+      && (
+        isPdf(selectedFile)
+        || isDocx(selectedFile)
+        || isPreviewableImage(selectedFile)
+      )
+    );
+  }
+
+  async function processAutomationCurrentFile(options = {}) {
+    if (!selectedFile) {
+      throw new Error(t("automationOcrUnsupported"));
+    }
+
+    if (isDocx(selectedFile)) {
+      return extractAutomationTextFromDocx(selectedFile);
+    }
+
+    if (isPdf(selectedFile)) {
+      const embeddedText = await extractTextFromPdfFile(selectedFile).catch(() => "");
+      if (embeddedText) {
+        return {
+          text: embeddedText,
+          confidence: 100,
+          language: "",
+          sourceName: selectedFile.name || "",
+          method: "pdf_embedded_text",
+          warnings: []
+        };
+      }
+
+      if (!window.CrmAutomationOcr?.isOcrAvailable?.()) {
+        throw new Error(t("automationOcrUnavailable"));
+      }
+
+      return window.CrmAutomationOcr.recognizeFile(selectedFile, options).then((result) => ({
+        ...result,
+        method: "pdf_ocr"
+      }));
+    }
+
+    if (isPreviewableImage(selectedFile)) {
+      if (!window.CrmAutomationOcr?.isOcrAvailable?.()) {
+        throw new Error(t("automationOcrUnavailable"));
+      }
+
+      return window.CrmAutomationOcr.recognizeFile(selectedFile, options).then((result) => ({
+        ...result,
+        method: "image_ocr"
+      }));
+    }
+
+    throw new Error(t("automationOcrUnsupported"));
+  }
+
+  async function extractAutomationTextFromDocx(file) {
+    if (!window.mammoth) {
+      throw new Error(t("docxLibraryMissing"));
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    if (typeof window.mammoth.extractRawText === "function") {
+      const result = await window.mammoth.extractRawText({ arrayBuffer });
+      return {
+        text: normalizeText(result.value || ""),
+        confidence: 100,
+        language: "",
+        sourceName: file.name || "",
+        method: "docx_raw_text",
+        warnings: (result.messages || []).map((message) => message.message || String(message))
+      };
+    }
+
+    const result = await window.mammoth.convertToHtml({ arrayBuffer });
+    const template = document.createElement("template");
+    template.innerHTML = result.value || "";
+    return {
+      text: normalizeText(template.content.textContent || ""),
+      confidence: 100,
+      language: "",
+      sourceName: file.name || "",
+      method: "docx_html_text",
+      warnings: (result.messages || []).map((message) => message.message || String(message))
+    };
+  }
+
+  function updateAutomationFillButtonState() {
+    const fillButton = shadowRoot?.querySelector("[data-automation-fill]");
+    if (fillButton) {
+      fillButton.disabled = !canFillAutomationFields();
+    }
+  }
+
+  function insertAutomationOcrText(text, ocrResult) {
+    const editor = shadowRoot?.querySelector(".editor");
+    if (!editor) {
+      return;
+    }
+
+    const sourceName = ocrResult?.sourceName || selectedFile?.name || "";
+    const heading = currentLanguage === "en" ? "Processed document text" : "已处理文档文字";
+    const confidence = Math.round(Number(ocrResult?.confidence) || 0);
+    const normalizedText = String(text || "").trim();
+    const escapedText = escapeHtml(normalizedText);
+    const blockHtml = `
+      <section class="ocr-text-extract" data-automation-ocr-text>
+        <p><strong>${escapeHtml(heading)}</strong>${sourceName ? ` · ${escapeHtml(sourceName)}` : ""} · ${confidence}%</p>
+        <pre>${escapedText}</pre>
+      </section>
+    `;
+
+    const existingOcrBlock = editor.querySelector("[data-automation-ocr-text]");
+    if (existingOcrBlock) {
+      existingOcrBlock.outerHTML = blockHtml;
+      return;
+    }
+
+    editor.insertAdjacentHTML("beforeend", blockHtml);
+  }
+
+  function getAutomationCurrentMapping() {
+    const defaultMapping = window.CrmAutomationSchema?.DEFAULT_CRM_FIELD_MAPPING || {};
+    return {
+      ...defaultMapping,
+      ...automationFieldMappings
+    };
+  }
+
+  function getAutomationCanonicalFields() {
+    const schemaFields = window.CrmAutomationSchema?.CANONICAL_FIELDS || [];
+    const extractedFields = Object.keys(automationExtractionResult?.fields || {});
+    return uniqueAutomationStrings(schemaFields.concat(extractedFields));
+  }
+
+  function getAutomationFieldLabel(fieldKey) {
+    const labels = window.CrmAutomationSchema?.FIELD_LABELS || {};
+    return labels[currentLanguage]?.[fieldKey] || labels.en?.[fieldKey] || labels.zh?.[fieldKey] || fieldKey;
+  }
+
+  function getAutomationRisk(fieldKey) {
+    const levels = window.CrmAutomationSchema?.RISK_LEVELS || {};
+    if ((levels.high || []).includes(fieldKey)) {
+      return "high";
+    }
+    if ((levels.medium || []).includes(fieldKey)) {
+      return "medium";
+    }
+    return "low";
+  }
+
+  function buildAutomationRiskBadge(risk) {
+    const label = risk === "high"
+      ? t("automationHighRisk")
+      : risk === "medium"
+        ? "Medium"
+        : "Low";
+    const className = risk === "high" ? " automation-pill--high" : "";
+    return `<span class="automation-pill${className}">${escapeHtml(label)}</span>`;
+  }
+
+  function getAutomationFieldStatus(fieldKey, field) {
+    const issue = (automationValidationResult.blockingIssues || []).find((item) => item.fieldKey === fieldKey);
+    if (issue) {
+      return formatAutomationIssue(issue);
+    }
+    if (field.conflict) {
+      return `Conflict: rule=${field.ruleValue || ""}; AI=${field.visionValue || ""}`;
+    }
+    if (automationEditedFields.has(fieldKey) || field.method === "manual" || field.method === "manual_edit") {
+      return t("automationEdited");
+    }
+    if (getAutomationRisk(fieldKey) === "high" || Number(field.confidence) < (getAutomationRisk(fieldKey) === "high" ? 0.8 : 0.65)) {
+      return t("automationReviewRequired");
+    }
+    return t("automationReady");
+  }
+
+  function formatAutomationIssue(issue) {
+    const fieldLabel = issue.fieldKey ? getAutomationFieldLabel(issue.fieldKey) : "";
+    return fieldLabel ? `${fieldLabel}: ${issue.message || issue.code || ""}` : (issue.message || issue.code || "");
+  }
+
+  function formatAutomationConfidence(confidence) {
+    if (!Number.isFinite(confidence)) {
+      return "--";
+    }
+    return `${Math.round(confidence * 100)}%`;
+  }
+
+  function isAutomationDebugEnabled() {
+    try {
+      return window.localStorage?.getItem("crmAutomationDebugEnabled") === "true";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function formatAutomationDebugValue(value) {
+    if (typeof value === "string") {
+      return value;
+    }
+    try {
+      return JSON.stringify(value, null, 2);
+    } catch (error) {
+      return String(value || "");
+    }
+  }
+
+  function formatAutomationTimestamp(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return String(value || "");
+    }
+    return date.toLocaleString(currentLanguage === "en" ? "en-US" : "zh-CN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function getAutomationCurrentScNo() {
+    const fields = automationValidationResult.normalizedFields || automationExtractionResult?.fields || {};
+    return fields.scNo?.value || "";
+  }
+
+  function getMappedFieldForCandidate(candidate) {
+    return Object.entries(automationFieldMappings).find(([, mapping]) => {
+      return mapping?.lastSelectorUsed === candidate.selectorCandidate || (mapping?.selectors || []).includes(candidate.selectorCandidate);
+    })?.[0] || "";
+  }
+
+  function setAutomationStatus(message, type = "info") {
+    automationStatusMessage = message;
+    automationStatusType = type;
+  }
+
+  function hasAutomationModules() {
+    return Boolean(
+      window.CrmAutomationExtractor?.extractAutomationFields
+      && window.CrmAutomationValidator?.validateAutomationExtraction
+      && window.CrmDomAdapter?.fillCrmFields
+      && window.CrmAutomationAudit
+    );
+  }
+
+  async function recordAutomationExtractionAudit(userAction, metadata = {}) {
+    if (!window.CrmAutomationAudit?.recordExtractionRun || !automationExtractionResult) {
+      return;
+    }
+
+    try {
+      await window.CrmAutomationAudit.recordExtractionRun({
+        userAction,
+        scNo: getAutomationCurrentScNo(),
+        documentType: automationExtractionResult.documentType,
+        fields: automationExtractionResult.fields,
+        validationWarnings: automationValidationResult.warnings,
+        blockingIssues: automationValidationResult.blockingIssues,
+        metadata
+      });
+    } catch (error) {
+      // Audit failure should not block review or fill.
+    }
+  }
+
+  async function recordAutomationFillAudit(selectedFields) {
+    if (!window.CrmAutomationAudit?.recordAutofillRun || !automationExtractionResult) {
+      return;
+    }
+
+    try {
+      await window.CrmAutomationAudit.recordAutofillRun({
+        userAction: "fill_selected",
+        scNo: getAutomationCurrentScNo(),
+        documentType: automationExtractionResult.documentType,
+        fields: selectedFields,
+        validationWarnings: automationValidationResult.warnings,
+        blockingIssues: automationValidationResult.blockingIssues,
+        crmFillResult: automationLastFillResult
+      });
+    } catch (error) {
+      // Audit failure should not block local CRM fill reporting.
+    }
+  }
+
+  async function fillAutomationFieldsInBestContext(fields, mapping) {
+    const currentResult = await window.CrmDomAdapter.fillCrmFields(fields, mapping, {
+      skipHidden: true,
+      includeFrames: false
+    });
+    const frameResult = getCrmFrames().length > 0
+      ? await fillAutomationFieldsInFrames(fields, mapping)
+      : createEmptyAutomationFillResult();
+
+    return mergeAutomationFillResults(currentResult, frameResult);
+  }
+
+  function fillAutomationFieldsInFrames(fields, mapping) {
+    const frames = getCrmFrames();
+    const requestId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    let pendingResponses = frames.length;
+    const aggregate = createEmptyAutomationFillResult();
+
+    return new Promise((resolve) => {
+      const timer = window.setTimeout(() => {
+        cleanup();
+        resolve(aggregate);
+      }, FRAME_UPLOAD_TIMEOUT);
+
+      function handleFrameResponse(event) {
+        if (event.data?.type !== FRAME_AUTOMATION_FILL_RESPONSE || event.data.requestId !== requestId) {
+          return;
+        }
+
+        if (event.data.ok && event.data.result) {
+          mergeAutomationFillResultsInto(aggregate, event.data.result);
+        } else if (event.data.error) {
+          aggregate.errors.push({
+            fieldKey: "",
+            error: event.data.error
+          });
+        }
+        pendingResponses -= 1;
+
+        if (pendingResponses <= 0) {
+          cleanup();
+          resolve(aggregate);
+        }
+      }
+
+      function cleanup() {
+        window.clearTimeout(timer);
+        window.removeEventListener("message", handleFrameResponse);
+      }
+
+      window.addEventListener("message", handleFrameResponse);
+      frames.forEach((frame) => {
+        frame.contentWindow.postMessage({
+          type: FRAME_AUTOMATION_FILL_REQUEST,
+          requestId,
+          fields,
+          mapping
+        }, "*");
+      });
+    });
+  }
+
+  function createEmptyAutomationFillResult() {
+    return {
+      filled: [],
+      skipped: [],
+      errors: []
+    };
+  }
+
+  function mergeAutomationFillResults(first, second) {
+    const aggregate = createEmptyAutomationFillResult();
+    mergeAutomationFillResultsInto(aggregate, first);
+    mergeAutomationFillResultsInto(aggregate, second);
+    return aggregate;
+  }
+
+  function mergeAutomationFillResultsInto(target, source) {
+    target.filled.push(...(source?.filled || []));
+    target.skipped.push(...(source?.skipped || []));
+    target.errors.push(...(source?.errors || []));
+    return target;
+  }
+
+  function uniqueAutomationStrings(values) {
+    return Array.from(new Set((values || []).map((value) => String(value || "").trim()).filter(Boolean)));
   }
 
   function extractCrmFieldsFromText(text) {
@@ -10340,6 +12032,34 @@
           ok: false,
           filled: 0,
           skipped: Object.keys(fields || {}).length,
+          error: error.message || t("crmAutofillFailed")
+        }, "*");
+      }
+    });
+
+    window.addEventListener("message", async (event) => {
+      if (event.source !== window.parent || event.data?.type !== FRAME_AUTOMATION_FILL_REQUEST) {
+        return;
+      }
+
+      const { requestId, fields, mapping } = event.data;
+      try {
+        const result = await window.CrmDomAdapter.fillCrmFields(fields || {}, mapping || {}, {
+          skipHidden: true,
+          includeFrames: false
+        });
+        window.parent.postMessage({
+          type: FRAME_AUTOMATION_FILL_RESPONSE,
+          requestId,
+          ok: true,
+          result
+        }, "*");
+      } catch (error) {
+        window.parent.postMessage({
+          type: FRAME_AUTOMATION_FILL_RESPONSE,
+          requestId,
+          ok: false,
+          result: createEmptyAutomationFillResult(),
           error: error.message || t("crmAutofillFailed")
         }, "*");
       }

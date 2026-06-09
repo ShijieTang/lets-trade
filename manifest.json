@@ -2,13 +2,16 @@
   "manifest_version": 3,
   "name": "CRM Embedded Workbench",
   "description": "Adds a right-side document workbench to the company CRM page.",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "permissions": [
     "bookmarks",
     "storage"
   ],
   "background": {
     "service_worker": "src/background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "content_scripts": [
     {
@@ -18,12 +21,36 @@
       "js": [
         "vendor/mammoth.browser.min.js",
         "vendor/xlsx.full.min.js",
+        "vendor/tesseract/tesseract.min.js",
         "src/financialCalculator.js",
         "src/customerCodeMap.js",
+        "src/automationSchema.js",
+        "src/documentImagePreprocessor.js",
+        "src/visionExtractionProvider.js",
+        "src/automationExtractor.js",
+        "src/automationValidator.js",
+        "src/crmDomAdapter.js",
+        "src/automationAudit.js",
+        "src/automationOcr.js",
         "src/content.js"
       ],
       "run_at": "document_idle",
       "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "vendor/tesseract/worker.min.js",
+        "vendor/tesseract/core/*",
+        "vendor/tesseract/lang/*",
+        "vendor/pdfjs/pdf.min.mjs",
+        "vendor/pdfjs/pdf.worker.min.mjs",
+        "vendor/pdfjs/standard_fonts/*"
+      ],
+      "matches": [
+        "https://crm.chinaexp365.com/*"
+      ]
     }
   ]
 }

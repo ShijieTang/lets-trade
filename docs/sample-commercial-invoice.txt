@@ -1,0 +1,48 @@
+COMMERCIAL INVOICE
+
+Invoice No: CI-2026-0604-001
+Invoice Date: 2026-06-04
+Seller: Hangzhou Demo Trade Co., Ltd.
+Buyer: Example Pharma Private Limited
+Customer PO No: PO-EXPL-2026-1188
+SC NO: YSDC-EXPL20260604
+Incoterms: CIF Nhava Sheva
+Payment Term: 30% T/T advance, 70% T/T before shipment
+Currency: USD
+
+Product: Sodium Benzoate
+Official English Name: Sodium Benzoate Granular
+CAS No: 532-32-1
+HS Code: 29163100
+Quantity: 1000 KGS
+Unit: KGS
+Unit Price: USD 2.50
+Product Amount: USD 2500.00
+Total Amount: USD 2500.00
+
+Packing: 40 bags
+Package Count: 40
+Gross Weight: 1040 KGS
+Net Weight: 1000 KGS
+Volume: 3.20 CBM
+
+POL: Shanghai, China
+POD: Nhava Sheva, India
+Destination Port: Nhava Sheva
+ETD: 2026-06-20
+ETA: 2026-07-05
+Vessel: Demo Star
+Voyage: DS2606E
+Container No: ABCD1234567
+B/L No: BLDEMO260604
+
+Consignee:
+Example Pharma Private Limited
+Plot 18, Industrial Area, Mohali, Punjab, India
+
+Notify Party:
+Example Pharma Private Limited
+Attn: Import Documentation Team
+
+Insurance Policy No: INS-2026-9988
+Insured Amount: USD 2750.00
