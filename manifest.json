@@ -7,6 +7,9 @@
     "bookmarks",
     "storage"
   ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*"
+  ],
   "background": {
     "service_worker": "src/background.js"
   },
@@ -20,6 +23,11 @@
         "vendor/xlsx.full.min.js",
         "src/financialCalculator.js",
         "src/customerCodeMap.js",
+        "src/geminiExtractionProvider.js",
+        "src/automationValidator.js",
+        "src/crmDomAdapter.js",
+        "src/automationAudit.js",
+        "src/automationExtractor.js",
         "src/content.js"
       ],
       "run_at": "document_idle",

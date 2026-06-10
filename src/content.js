@@ -20,6 +20,7 @@
   const REMOVED_DEFAULT_QUICK_LINKS_STORAGE_KEY = "crmWorkbenchRemovedDefaultQuickLinks";
   const DOC_FLOW_UI_STATE_STORAGE_KEY = "crmWorkbenchDocFlowUiState";
   const DOC_FLOW_QUICK_REF_OPEN_STORAGE_KEY = "crmWorkbenchDocFlowQuickRefOpen";
+  const GEMINI_FIRST_SEND_CONFIRMED_STORAGE_KEY = "crmWorkbenchGeminiFirstSendConfirmed";
   const DOC_FLOW_DB_NAME = "DocFlowMatrixDB";
   const DOC_FLOW_DB_VERSION = 1;
   const DOC_FLOW_ORDER_STORE = "orders";
@@ -427,6 +428,49 @@
     shortfallRate: "5%"
   };
   const PRODUCT_FIELD_KEYS = new Set(["productName", "quantity", "unit", "unitPrice", "productAmount"]);
+  const GEMINI_TO_CRM_FIELD_MAP = {
+    signingDate: "signDate",
+    customerOrderNo: "customerOrderNo",
+    quotationNo: "quoteNo",
+    purchaseSaleMode: "purchaseSaleMode",
+    customer: "customer",
+    countryRegion: "country",
+    contactPerson: "contact",
+    currency: "currency",
+    exchangeRate: "exchangeRate",
+    contractTotalAmount: "contractAmount",
+    usdTotalAmount: "usdAmount",
+    paymentMethod: "paymentMethod",
+    deliveryPeriod: "deliveryTerm",
+    transportMode: "transportMode",
+    portOfLoading: "loadingPort",
+    destinationPort: "destinationPort",
+    portOfLoadingCountry: "loadingCountry",
+    destinationPortCountry: "destinationCountry",
+    destinationPlace: "destination",
+    incoterm: "tradeTerm",
+    overfillRate: "overfillRate",
+    shortfallRate: "shortfallRate",
+    shippingMark: "shippingMark",
+    remarks: "remark",
+    casNo: "casNo",
+    customsScNo: "customsScNo"
+  };
+  const TRADE_TO_CRM_FIELD_MAP = {
+    buyer: "customer",
+    productName: "productName",
+    officialEnglishName: "productName",
+    casNo: "casNo",
+    quantity: "quantity",
+    unit: "unit",
+    unitPrice: "unitPrice",
+    currency: "currency",
+    totalAmount: "contractAmount",
+    paymentTerm: "paymentMethod",
+    incoterm: "tradeTerm",
+    destinationPort: "destinationPort",
+    portOfLoading: "loadingPort"
+  };
   const TRANSLATIONS = {
     zh: {
       sidebarLabel: "CRM 嵌入式工作台侧边栏",
@@ -445,6 +489,7 @@
       sectionNavLabel: "工作台分区导航",
       navUpload: "上传",
       navLinks: "网站",
+      navAutoFill: "填表",
       navDocFlow: "单证",
       navCalculator: "计算",
       navFinancial: "退税",
@@ -453,6 +498,38 @@
       uploadTitle: "上传文档或图片文件",
       uploadHint: "点击或拖入文档、PDF、图片或表格文件。",
       uploadAria: "文档上传拖放区域",
+      autoFillTitle: "AI 自动填表",
+      autoFillLoadPdf: "载入 PDF",
+      autoFillValidate: "校验数据",
+      autoFillFillCrm: "填入 CRM 字段",
+      autoFillSaveMapping: "保存映射",
+      autoFillSettings: "Gemini 设置",
+      autoFillSaveSettings: "保存 Gemini 设置",
+      autoFillApiKey: "API Key",
+      autoFillModel: "模型",
+      autoFillMode: "提取模式",
+      autoFillEmpty: "载入 PDF 后显示可填字段。",
+      autoFillNoPdf: "请先选择 PDF 文件。",
+      autoFillExtracting: "正在通过 Gemini 提取 PDF 字段...",
+      autoFillExtracted: "已提取 {count} 个字段，请校验后填入。",
+      autoFillValidated: "已校验：{ready} 项可填，{review} 项需复核。",
+      autoFillFilled: "已填 {filled} 项，跳过 {skipped} 项，未匹配 {unmatched} 项。",
+      autoFillMappingSaved: "已保存 {count} 个字段映射。",
+      autoFillConfigSaved: "Gemini 设置已保存。",
+      autoFillRawResponse: "Gemini 原始响应",
+      autoFillRawResponseEmpty: "提取后显示 Gemini 原始响应。",
+      autoFillField: "字段",
+      autoFillValue: "值",
+      autoFillConfidence: "置信度",
+      autoFillRisk: "风险",
+      autoFillValidation: "校验",
+      autoFillInclude: "填入",
+      autoFillReady: "通过",
+      autoFillReview: "复核",
+      autoFillHigh: "高",
+      autoFillMedium: "中",
+      autoFillLow: "低",
+      autoFillNoFields: "没有可填字段。",
       quickLinksTitle: "常用网站",
       quickLinksNameLabel: "网站名称",
       quickLinksUrlLabel: "网址",
@@ -614,6 +691,7 @@
       sectionNavLabel: "Workbench section navigation",
       navUpload: "Upload",
       navLinks: "Links",
+      navAutoFill: "Auto Fill",
       navDocFlow: "Flow",
       navCalculator: "Calc",
       navFinancial: "Tax",
@@ -622,6 +700,38 @@
       uploadTitle: "Upload document or image file",
       uploadHint: "Click or drag document, PDF, image, or table files here.",
       uploadAria: "Document upload drop zone",
+      autoFillTitle: "AI Auto Fill",
+      autoFillLoadPdf: "Load PDF",
+      autoFillValidate: "Validate Data",
+      autoFillFillCrm: "Fill CRM Fields",
+      autoFillSaveMapping: "Save Mapping",
+      autoFillSettings: "Gemini Settings",
+      autoFillSaveSettings: "Save Gemini Settings",
+      autoFillApiKey: "API Key",
+      autoFillModel: "Model",
+      autoFillMode: "Extraction mode",
+      autoFillEmpty: "Load a PDF to review fillable fields.",
+      autoFillNoPdf: "Choose a PDF file first.",
+      autoFillExtracting: "Extracting PDF fields with Gemini...",
+      autoFillExtracted: "Extracted {count} fields. Validate before filling.",
+      autoFillValidated: "Validated: {ready} ready, {review} need review.",
+      autoFillFilled: "Filled {filled}, skipped {skipped}, unmatched {unmatched}.",
+      autoFillMappingSaved: "Saved {count} field mappings.",
+      autoFillConfigSaved: "Gemini settings saved.",
+      autoFillRawResponse: "Gemini Raw Response",
+      autoFillRawResponseEmpty: "Gemini raw response appears after extraction.",
+      autoFillField: "Field",
+      autoFillValue: "Value",
+      autoFillConfidence: "Confidence",
+      autoFillRisk: "Risk",
+      autoFillValidation: "Validation",
+      autoFillInclude: "Fill",
+      autoFillReady: "Ready",
+      autoFillReview: "Review",
+      autoFillHigh: "High",
+      autoFillMedium: "Medium",
+      autoFillLow: "Low",
+      autoFillNoFields: "No fillable fields detected.",
       quickLinksTitle: "Quick Links",
       quickLinksNameLabel: "Website name",
       quickLinksUrlLabel: "URL",
@@ -773,6 +883,15 @@
   let selectedFile = null;
   let selectedFileId = null;
   let loadedFiles = [];
+  let autoFillState = {
+    extraction: null,
+    fields: {},
+    validations: {},
+    matches: [],
+    status: "",
+    rawResponsePreview: "",
+    parsedResponsePreview: ""
+  };
   let currentPreviewUrl = null;
   let lastExpandedSidebarWidth = null;
   let isSidebarCollapsed = false;
@@ -3628,6 +3747,133 @@
         background: #115e59;
       }
 
+      .automation-ai {
+        border-top: 1px solid #e2e8f0;
+        padding: 12px 16px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .automation-ai__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .automation-ai__title {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.25;
+        color: #0f172a;
+      }
+
+      .automation-ai__summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .automation-ai__body {
+        display: grid;
+        gap: 10px;
+        padding: 12px 0;
+      }
+
+      .automation-ai__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .automation-ai__field {
+        display: grid;
+        gap: 4px;
+        font-size: 12px;
+        color: #475569;
+      }
+
+      .automation-ai__field input,
+      .automation-ai__field select {
+        min-width: 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 7px 8px;
+        font: inherit;
+      }
+
+      .automation-ai__checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #334155;
+      }
+
+      .automation-ai__buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .automation-ai__button {
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #0f172a;
+        padding: 8px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .automation-ai__button:hover {
+        background: #f8fafc;
+      }
+
+      .automation-review,
+      .automation-debug {
+        overflow: auto;
+        max-height: 320px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      .automation-review table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+
+      .automation-review th,
+      .automation-review td {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 6px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .automation-review input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+      }
+
+      .automation-review__empty {
+        margin: 0;
+        padding: 10px;
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .automation-debug {
+        padding: 8px;
+        white-space: pre-wrap;
+        font-size: 11px;
+        color: #334155;
+      }
+
       .save-button:active,
       .fill-button:active,
       .sync-button:active {
@@ -3701,6 +3947,7 @@
       <nav class="section-nav" data-i18n-aria-label="sectionNavLabel" aria-label="${t("sectionNavLabel")}">
         <button class="section-nav__button" type="button" data-section-target="upload" data-i18n="navUpload" data-i18n-title="navUpload" title="${t("navUpload")}">${t("navUpload")}</button>
         <button class="section-nav__button" type="button" data-section-target="links" data-i18n="navLinks" data-i18n-title="navLinks" title="${t("navLinks")}">${t("navLinks")}</button>
+        <button class="section-nav__button" type="button" data-section-target="auto-fill" data-i18n="navAutoFill" data-i18n-title="navAutoFill" title="${t("navAutoFill")}">${t("navAutoFill")}</button>
         <button class="section-nav__button" type="button" data-section-target="doc-flow" data-i18n="navDocFlow" data-i18n-title="navDocFlow" title="${t("navDocFlow")}">${t("navDocFlow")}</button>
         <button class="section-nav__button" type="button" data-section-target="calculator" data-i18n="navCalculator" data-i18n-title="navCalculator" title="${t("navCalculator")}">${t("navCalculator")}</button>
         <button class="section-nav__button" type="button" data-section-target="financial" data-i18n="navFinancial" data-i18n-title="navFinancial" title="${t("navFinancial")}">${t("navFinancial")}</button>
@@ -3715,6 +3962,47 @@
             <p class="drop-zone__hint" data-i18n="uploadHint">${t("uploadHint")}</p>
           </div>
           <input class="file-input" type="file" accept=".doc,.docx,.pdf,.jpg,.jpeg,.png,.xls,.xlsx,.csv,application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" hidden>
+        </section>
+
+        <section class="automation-ai" data-section="auto-fill">
+          <div class="automation-ai__header">
+            <h2 class="automation-ai__title" data-i18n="autoFillTitle">${t("autoFillTitle")}</h2>
+            <input class="automation-pdf-input" type="file" accept=".pdf,application/pdf" hidden>
+            <button class="automation-ai__button" type="button" data-auto-fill-load-pdf data-i18n="autoFillLoadPdf">${t("autoFillLoadPdf")}</button>
+          </div>
+          <div class="automation-ai__buttons">
+            <button class="automation-ai__button" type="button" data-auto-fill-validate data-i18n="autoFillValidate">${t("autoFillValidate")}</button>
+            <button class="automation-ai__button" type="button" data-auto-fill-fill data-i18n="autoFillFillCrm">${t("autoFillFillCrm")}</button>
+            <button class="automation-ai__button" type="button" data-auto-fill-save-mapping data-i18n="autoFillSaveMapping">${t("autoFillSaveMapping")}</button>
+          </div>
+          <p class="status" data-auto-fill-status>${t("autoFillEmpty")}</p>
+          <div class="automation-review" data-auto-fill-review></div>
+          <details class="automation-debug-panel">
+            <summary class="automation-ai__summary" data-i18n="autoFillRawResponse">${t("autoFillRawResponse")}</summary>
+            <pre class="automation-debug" data-auto-fill-raw-response>${t("autoFillRawResponseEmpty")}</pre>
+          </details>
+          <details class="automation-ai__settings">
+            <summary class="automation-ai__summary" data-i18n="autoFillSettings">${t("autoFillSettings")}</summary>
+            <div class="automation-ai__body">
+              <label class="automation-ai__field">
+                <span data-i18n="autoFillApiKey">${t("autoFillApiKey")}</span>
+                <input type="password" autocomplete="off" data-auto-fill-api-key>
+              </label>
+              <div class="automation-ai__grid">
+                <label class="automation-ai__field">
+                  <span data-i18n="autoFillModel">${t("autoFillModel")}</span>
+                  <input type="text" value="gemini-2.5-flash" data-auto-fill-model>
+                </label>
+                <label class="automation-ai__field">
+                  <span data-i18n="autoFillMode">${t("autoFillMode")}</span>
+                  <select data-auto-fill-mode>
+                    <option value="gemini_pdf_direct">gemini_pdf_direct</option>
+                  </select>
+                </label>
+              </div>
+              <button class="automation-ai__button" type="button" data-auto-fill-save-config data-i18n="autoFillSaveSettings">${t("autoFillSaveSettings")}</button>
+            </div>
+          </details>
         </section>
 
         <details class="quick-links" data-section="links">
@@ -3877,6 +4165,7 @@
     const sectionNav = shadowRoot.querySelector(".section-nav");
     const languageButton = shadowRoot.querySelector(".language-button");
     const docFlowSection = shadowRoot.querySelector(".doc-flow");
+    const autoFillSection = shadowRoot.querySelector("[data-section='auto-fill']");
 
     resizeHandle.addEventListener("pointerdown", startSidebarResize);
     resizeHandle.addEventListener("keydown", handleResizeKeydown);
@@ -3915,6 +4204,8 @@
     syncButton.addEventListener("click", handleSyncClick);
     calculator.addEventListener("input", handleCalculatorInput);
     sectionNav.addEventListener("click", handleSectionNavClick);
+    autoFillSection.addEventListener("click", handleAutoFillClick);
+    autoFillSection.addEventListener("change", handleAutoFillChange);
     docFlowSection.addEventListener("click", handleDocFlowClick);
     docFlowSection.addEventListener("input", handleDocFlowInput);
     docFlowSection.addEventListener("change", handleDocFlowChange);
@@ -3949,6 +4240,7 @@
       });
     });
     renderQuickLinks();
+    initializeAutoFillPanel();
     loadBookmarkFolders();
     initializeDocFlowMatrix();
     updatePriceCalculator();
@@ -4051,6 +4343,7 @@
     renderBookmarkFolders();
     updateQuickLinkFormMode();
     renderLoadedFiles();
+    renderAutoFillPanel();
     renderDocFlowForCurrentLanguage();
   }
 
@@ -6323,6 +6616,406 @@
       behavior: "smooth",
       block: "start"
     });
+  }
+
+  async function initializeAutoFillPanel() {
+    renderAutoFillPanel();
+    const provider = window.CrmGeminiExtractionProvider;
+    if (!provider?.getConfig) {
+      return;
+    }
+
+    try {
+      const config = await provider.getConfig();
+      const apiKeyInput = shadowRoot.querySelector("[data-auto-fill-api-key]");
+      const modelInput = shadowRoot.querySelector("[data-auto-fill-model]");
+      const modeSelect = shadowRoot.querySelector("[data-auto-fill-mode]");
+      if (apiKeyInput) {
+        apiKeyInput.value = config.apiKey || "";
+      }
+      if (modelInput) {
+        modelInput.value = config.model || "gemini-2.5-flash";
+      }
+      if (modeSelect) {
+        modeSelect.value = config.mode || "gemini_pdf_direct";
+      }
+    } catch (error) {
+      setAutoFillStatus(error.message || "Gemini settings could not be loaded.", "error");
+    }
+  }
+
+  function handleAutoFillClick(event) {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) {
+      return;
+    }
+
+    if (target.closest("[data-auto-fill-load-pdf]")) {
+      shadowRoot.querySelector(".automation-pdf-input")?.click();
+      return;
+    }
+    if (target.closest("[data-auto-fill-validate]")) {
+      validateAutoFillFields();
+      return;
+    }
+    if (target.closest("[data-auto-fill-fill]")) {
+      fillAutoFillFields();
+      return;
+    }
+    if (target.closest("[data-auto-fill-save-mapping]")) {
+      saveAutoFillMappings();
+      return;
+    }
+    if (target.closest("[data-auto-fill-save-config]")) {
+      saveAutoFillConfig();
+    }
+  }
+
+  function handleAutoFillChange(event) {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) {
+      return;
+    }
+
+    if (target.matches(".automation-pdf-input")) {
+      const [file] = target.files || [];
+      if (file) {
+        extractAutoFillPdf(file);
+      }
+      target.value = "";
+      return;
+    }
+
+    const key = target.dataset.autoFillInclude || target.dataset.autoFillValue;
+    if (!key || !autoFillState.fields[key]) {
+      return;
+    }
+
+    if (target.dataset.autoFillInclude) {
+      autoFillState.fields[key].include = target.checked === true;
+    } else {
+      autoFillState.fields[key].value = target.value;
+      validateAutoFillFields({ silent: true });
+    }
+    renderAutoFillPanel();
+  }
+
+  async function extractAutoFillPdf(file) {
+    if (!isPdf(file)) {
+      setAutoFillStatus(t("autoFillNoPdf"), "error");
+      return;
+    }
+
+    autoFillState.rawResponsePreview = "";
+    autoFillState.parsedResponsePreview = "";
+    renderAutoFillPanel();
+    setAutoFillStatus(t("autoFillExtracting"));
+    try {
+      await loadDocumentFile(file);
+      const provider = window.CrmGeminiExtractionProvider;
+      if (!provider?.extractFromPdfFile) {
+        throw new Error("Gemini extraction provider is not loaded.");
+      }
+
+      const extraction = await provider.extractFromPdfFile(file);
+      const fields = buildAutoFillFields(extraction);
+      autoFillState = {
+        extraction,
+        fields,
+        validations: {},
+        matches: [],
+        status: t("autoFillExtracted", { count: Object.keys(fields).length }),
+        rawResponsePreview: formatAutoFillDebugPayload(extraction.rawResponse),
+        parsedResponsePreview: formatAutoFillDebugPayload({
+          documentType: extraction.documentType,
+          crmFields: extraction.crmFields,
+          tradeFields: extraction.tradeFields,
+          lineItems: extraction.lineItems,
+          warnings: extraction.warnings
+        })
+      };
+      validateAutoFillFields({ silent: true });
+      renderAutoFillPanel();
+      setAutoFillStatus(autoFillState.status, "success");
+    } catch (error) {
+      autoFillState.rawResponsePreview = formatAutoFillDebugPayload({
+        error: error.message || String(error),
+        responseText: error.responseText || "",
+        rawResponse: error.rawResponse || null
+      });
+      autoFillState.parsedResponsePreview = "";
+      renderAutoFillPanel();
+      setAutoFillStatus(error.message || t("crmAutofillFailed"), "error");
+    }
+  }
+
+  function buildAutoFillFields(extraction) {
+    const fields = {};
+    const addField = (key, field, source, crmKey = key) => {
+      const value = normalizeText(field?.value ?? "");
+      if (!value) {
+        return;
+      }
+      const existing = fields[crmKey];
+      const confidence = normalizeAutoFillConfidence(field?.confidence);
+      if (existing && existing.confidence > confidence) {
+        return;
+      }
+      fields[crmKey] = {
+        key: crmKey,
+        sourceKey: key,
+        source,
+        value,
+        pageNo: field?.pageNo ?? null,
+        evidence: field?.evidence || "",
+        confidence,
+        include: confidence >= 0.6
+      };
+    };
+
+    Object.entries(extraction?.crmFields || {}).forEach(([key, field]) => {
+      addField(key, field, "crmFields", key);
+    });
+    Object.entries(extraction?.tradeFields || {}).forEach(([key, field]) => {
+      addField(key, field, "tradeFields", key);
+    });
+    return fields;
+  }
+
+  function validateAutoFillFields(options = {}) {
+    const validator = window.CrmAutomationValidator;
+    if (!validator?.validateField) {
+      setAutoFillStatus("Automation validator is not loaded.", "error");
+      return {};
+    }
+
+    const validations = {};
+    Object.entries(autoFillState.fields).forEach(([key, field]) => {
+      const validation = validator.validateField(key, field);
+      validations[key] = validation;
+      field.validation = validation;
+    });
+    autoFillState.validations = validations;
+
+    const ready = Object.values(validations).filter((validation) => validation.valid && !validation.reviewRequired).length;
+    const review = Object.values(validations).filter((validation) => validation.reviewRequired || !validation.valid).length;
+    autoFillState.status = t("autoFillValidated", { ready, review });
+    if (!options.silent) {
+      setAutoFillStatus(autoFillState.status, review ? "info" : "success");
+    }
+    renderAutoFillPanel();
+    return validations;
+  }
+
+  async function fillAutoFillFields() {
+    const adapter = window.CrmDomAdapter;
+    const audit = window.CrmAutomationAudit;
+    if (!adapter?.matchFields || !adapter?.fillFields) {
+      setAutoFillStatus("CRM DOM adapter is not loaded.", "error");
+      return;
+    }
+
+    const validations = Object.keys(autoFillState.validations).length ? autoFillState.validations : validateAutoFillFields({ silent: true });
+    const checkedFields = Object.fromEntries(Object.entries(autoFillState.fields).filter(([key, field]) => {
+      const validation = validations[key];
+      return field.include && validation?.valid && !validation.reviewRequired;
+    }).map(([key, field]) => [key, {
+      ...field,
+      value: field.value,
+      confidence: field.confidence
+    }]));
+
+    if (!Object.keys(checkedFields).length) {
+      setAutoFillStatus(t("autoFillNoFields"), "error");
+      return;
+    }
+
+    try {
+      const mappings = audit?.getMappings ? await audit.getMappings() : {};
+      const matches = adapter.matchFields({ fields: checkedFields }, mappings);
+      const fillableMatches = matches.filter((match) => match.element);
+      const fillStatus = adapter.fillFields(fillableMatches);
+      autoFillState.matches = matches;
+
+      const filled = fillStatus.filter((status) => status.status === "filled").length;
+      const skipped = Object.keys(checkedFields).length - filled;
+      const unmatched = matches.filter((match) => !match.element).length;
+      const message = t("autoFillFilled", { filled, skipped, unmatched });
+
+      if (audit?.saveLog) {
+        await audit.saveLog({
+          documentType: autoFillState.extraction?.documentType || "",
+          extractedFields: checkedFields,
+          validationResults: validations,
+          fillStatus,
+          warnings: autoFillState.extraction?.warnings || []
+        });
+      }
+
+      renderAutoFillPanel();
+      setAutoFillStatus(message, filled > 0 ? "success" : "error");
+    } catch (error) {
+      setAutoFillStatus(error.message || t("crmAutofillFailed"), "error");
+    }
+  }
+
+  async function saveAutoFillMappings() {
+    const audit = window.CrmAutomationAudit;
+    if (!audit?.saveMappings) {
+      setAutoFillStatus("Automation audit store is not loaded.", "error");
+      return;
+    }
+
+    const mappings = audit.getMappings ? { ...(await audit.getMappings()) } : {};
+    autoFillState.matches.forEach((match) => {
+      if (match.key && match.selector) {
+        mappings[match.key] = match.selector;
+      }
+    });
+
+    try {
+      await audit.saveMappings(mappings);
+      setAutoFillStatus(t("autoFillMappingSaved", { count: Object.keys(mappings).length }), "success");
+    } catch (error) {
+      setAutoFillStatus(error.message || "Field mappings could not be saved.", "error");
+    }
+  }
+
+  async function saveAutoFillConfig() {
+    const provider = window.CrmGeminiExtractionProvider;
+    if (!provider?.saveConfig) {
+      setAutoFillStatus("Gemini extraction provider is not loaded.", "error");
+      return;
+    }
+
+    try {
+      await provider.saveConfig({
+        apiKey: shadowRoot.querySelector("[data-auto-fill-api-key]")?.value || "",
+        model: shadowRoot.querySelector("[data-auto-fill-model]")?.value || "gemini-2.5-flash",
+        mode: shadowRoot.querySelector("[data-auto-fill-mode]")?.value || "gemini_pdf_direct"
+      });
+      setAutoFillStatus(t("autoFillConfigSaved"), "success");
+    } catch (error) {
+      setAutoFillStatus(error.message || "Gemini settings could not be saved.", "error");
+    }
+  }
+
+  function renderAutoFillPanel() {
+    if (!shadowRoot) {
+      return;
+    }
+
+    const status = shadowRoot.querySelector("[data-auto-fill-status]");
+    if (status) {
+      status.textContent = autoFillState.status || t("autoFillEmpty");
+    }
+
+    const rawResponse = shadowRoot.querySelector("[data-auto-fill-raw-response]");
+    if (rawResponse) {
+      rawResponse.textContent = buildAutoFillRawResponseText();
+    }
+
+    const review = shadowRoot.querySelector("[data-auto-fill-review]");
+    if (!review) {
+      return;
+    }
+
+    const fields = Object.values(autoFillState.fields);
+    if (!fields.length) {
+      review.innerHTML = `<p class="automation-review__empty">${escapeHtml(t("autoFillEmpty"))}</p>`;
+      return;
+    }
+
+    review.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>${escapeHtml(t("autoFillInclude"))}</th>
+            <th>${escapeHtml(t("autoFillField"))}</th>
+            <th>${escapeHtml(t("autoFillValue"))}</th>
+            <th>${escapeHtml(t("autoFillConfidence"))}</th>
+            <th>${escapeHtml(t("autoFillRisk"))}</th>
+            <th>${escapeHtml(t("autoFillValidation"))}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${fields.map((field) => renderAutoFillRow(field)).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderAutoFillRow(field) {
+    const validation = field.validation || autoFillState.validations[field.key] || {};
+    const risk = validation.riskLevel || "low";
+    const validationText = validation.valid && !validation.reviewRequired
+      ? t("autoFillReady")
+      : `${t("autoFillReview")}${validation.issues?.length ? `: ${validation.issues.join(", ")}` : ""}`;
+    return `
+      <tr>
+        <td><input type="checkbox" data-auto-fill-include="${escapeHtml(field.key)}"${field.include ? " checked" : ""}></td>
+        <td>${escapeHtml(field.key)}</td>
+        <td><input class="quick-links__input" type="text" value="${escapeHtml(field.value)}" data-auto-fill-value="${escapeHtml(field.key)}"></td>
+        <td>${escapeHtml(formatPercent(field.confidence))}</td>
+        <td>${escapeHtml(translateAutoFillRisk(risk))}</td>
+        <td>${escapeHtml(validationText)}</td>
+      </tr>
+    `;
+  }
+
+  function setAutoFillStatus(message, type = "info") {
+    autoFillState.status = message;
+    const status = shadowRoot?.querySelector("[data-auto-fill-status]");
+    if (!status) {
+      return;
+    }
+    status.className = `status${type === "success" ? " status--success" : type === "error" ? " status--error" : ""}`;
+    status.textContent = message;
+  }
+
+  function buildAutoFillRawResponseText() {
+    const sections = [];
+    if (autoFillState.rawResponsePreview) {
+      sections.push(`RAW GEMINI RESPONSE\n${autoFillState.rawResponsePreview}`);
+    }
+    if (autoFillState.parsedResponsePreview) {
+      sections.push(`\nPARSED EXTRACTION\n${autoFillState.parsedResponsePreview}`);
+    }
+    return sections.join("\n\n").trim() || t("autoFillRawResponseEmpty");
+  }
+
+  function formatAutoFillDebugPayload(payload) {
+    if (payload == null || payload === "") {
+      return "";
+    }
+    if (typeof payload === "string") {
+      return payload;
+    }
+    try {
+      return JSON.stringify(payload, null, 2);
+    } catch (error) {
+      return String(payload);
+    }
+  }
+
+  function translateAutoFillRisk(risk) {
+    if (risk === "high") {
+      return t("autoFillHigh");
+    }
+    if (risk === "medium") {
+      return t("autoFillMedium");
+    }
+    return t("autoFillLow");
+  }
+
+  function normalizeAutoFillConfidence(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? Math.max(0, Math.min(1, number)) : 0;
+  }
+
+  function formatPercent(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? `${Math.round(number * 100)}%` : "0%";
   }
 
   function handleCalculateCurrentTableClick(event) {
