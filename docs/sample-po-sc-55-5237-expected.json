@@ -1,0 +1,19 @@
+{
+  "documentType": "purchase_order_or_sales_contract",
+  "productName": "3-AMINOPROPANOL / 3-AMINO PROPANOL",
+  "quantity": "6480 KG / 6,480 KGS",
+  "unitPrice": "USD 9.3000 / USD 9.30/KG",
+  "amount": "USD 60,264.000",
+  "hsCode": "2922.9.90",
+  "casNo": "156-87-6",
+  "paymentTerm": "DA 90 days from the date of AWB / BOL",
+  "destinationPort": "NHAVA SHEVA SEA PORT / NHAVA SHEVA",
+  "incoterm": "CIF NHAVA SHEVA",
+  "packingTerms": "180KG/DRUM",
+  "insuranceTerms": "From seller's warehouse to buyer's warehouse for 110% value / sellers cover 110% invoice value",
+  "buyer": "Synthimed Labs Private Limited",
+  "seller": "Dragon Chemicals Group Co., Ltd.",
+  "manufacturer": "Kunshan Xianghe Fine Chemical Plant",
+  "bankName": "Zhejiang Chouzhou Commercial Bank Co., Ltd.",
+  "swift": "CZCNCNX"
+}
