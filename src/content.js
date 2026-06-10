@@ -7,6 +7,7 @@
  */
 (function initializeCrmWorkbench() {
   const LEFT_VIEWPORT_ID = "crm-workbench-left-viewport";
+  const APP_SHELL_ID = "crm-workbench-app-shell";
   const CRM_SURFACE_ID = "crm-workbench-crm-surface";
   const CRM_HORIZONTAL_SCROLLBAR_ID = "crm-workbench-crm-horizontal-scrollbar";
   const SIDEBAR_ID = "crm-workbench-sidebar-host";
@@ -1110,11 +1111,23 @@
         overflow: hidden !important;
       }
 
-      html.crm-workbench-active #${LEFT_VIEWPORT_ID} {
+      html.crm-workbench-active #${APP_SHELL_ID} {
         position: fixed !important;
         inset: 0 auto 0 0 !important;
         width: calc(100vw - var(--crm-workbench-sidebar-width, 50vw)) !important;
         height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        z-index: 1 !important;
+      }
+
+      html.crm-workbench-active #${LEFT_VIEWPORT_ID} {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
         overflow: auto !important;
         background: #fff !important;
         z-index: 1 !important;
@@ -1153,21 +1166,18 @@
 
       html.crm-workbench-active #${CRM_HORIZONTAL_SCROLLBAR_ID} {
         all: initial !important;
-        position: fixed !important;
-        left: 14px !important;
-        right: calc(var(--crm-workbench-sidebar-width, 50vw) + 14px) !important;
-        bottom: 14px !important;
-        height: 42px !important;
-        z-index: 2147483000 !important;
+        flex: 0 0 auto !important;
+        min-height: 42px !important;
+        z-index: 2 !important;
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
-        padding: 6px 8px !important;
+        margin: 0 !important;
+        padding: 6px 14px !important;
         box-sizing: border-box !important;
-        border: 1px solid rgba(100, 116, 139, 0.48) !important;
-        border-radius: 8px !important;
-        background: rgba(255, 255, 255, 0.96) !important;
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18) !important;
+        border-top: 1px solid rgba(100, 116, 139, 0.48) !important;
+        background: #ffffff !important;
+        box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.08) !important;
         opacity: 1 !important;
         transform: translateY(0) !important;
         transition: opacity 120ms ease, transform 120ms ease !important;
@@ -1176,6 +1186,7 @@
       }
 
       html.crm-workbench-active #${CRM_HORIZONTAL_SCROLLBAR_ID}.is-hidden {
+        display: none !important;
         opacity: 0 !important;
         transform: translateY(12px) !important;
         pointer-events: none !important;
@@ -1258,6 +1269,9 @@
   }
 
   function createCrmLeftViewport() {
+    const appShell = document.createElement("div");
+    appShell.id = APP_SHELL_ID;
+
     const leftViewport = document.createElement("div");
     leftViewport.id = LEFT_VIEWPORT_ID;
 
@@ -1270,7 +1284,8 @@
     }
 
     leftViewport.appendChild(crmSurface);
-    document.body.appendChild(leftViewport);
+    appShell.appendChild(leftViewport);
+    document.body.appendChild(appShell);
   }
 
   function createCrmHorizontalScrollbar() {
@@ -1293,7 +1308,12 @@
       <button class="crm-h-scroll__button" type="button" data-crm-horizontal-scroll-action="end">&raquo;</button>
     `;
 
-    document.documentElement.appendChild(scrollbar);
+    const appShell = document.getElementById(APP_SHELL_ID);
+    if (appShell) {
+      appShell.appendChild(scrollbar);
+    } else {
+      document.body.appendChild(scrollbar);
+    }
     updateCrmHorizontalScrollbarLabels();
     bindCrmHorizontalScrollbar(scrollbar, leftViewport);
     scheduleCrmHorizontalScrollbarUpdate();
@@ -1595,9 +1615,11 @@
       .workbench {
         position: relative;
         width: 100%;
-        height: 100vh;
+        height: 100%;
+        min-height: 0;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         background: #f8fafc;
         border-left: 1px solid #cbd5e1;
         box-shadow: -8px 0 24px rgba(15, 23, 42, 0.12);
@@ -3696,11 +3718,12 @@
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         gap: 10px;
-        margin: 0 16px 16px;
+        margin: 0;
         padding: 16px;
         background: #ffffff;
-        border: 1px solid #dbe3ef;
-        border-radius: 8px;
+        border: 0;
+        border-top: 1px solid #dbe3ef;
+        box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.06);
       }
 
       .save-button,
@@ -4133,13 +4156,13 @@
           </div>
           <div class="editor" contenteditable="true" role="textbox" aria-multiline="true" data-i18n-data-placeholder="editorPlaceholder" data-placeholder="${t("editorPlaceholder")}"></div>
         </section>
-
-        <footer class="action-bar" data-section="actions">
-          <button class="save-button" type="button" data-i18n="saveEditedCopy">${t("saveEditedCopy")}</button>
-          <button class="fill-button" type="button" data-i18n="extractFillCrm">${t("extractFillCrm")}</button>
-          <button class="sync-button" type="button" data-i18n="syncUpload">${t("syncUpload")}</button>
-        </footer>
       </div>
+
+      <footer class="action-bar" data-section="actions">
+        <button class="save-button" type="button" data-i18n="saveEditedCopy">${t("saveEditedCopy")}</button>
+        <button class="fill-button" type="button" data-i18n="extractFillCrm">${t("extractFillCrm")}</button>
+        <button class="sync-button" type="button" data-i18n="syncUpload">${t("syncUpload")}</button>
+      </footer>
     `;
     return wrapper;
   }
