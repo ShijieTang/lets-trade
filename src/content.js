@@ -582,6 +582,12 @@
       exportExchangeRate: "汇率（USD/RMB）",
       exportCheckOfficialRate: "🌐 Check Official CFETS Rate",
       exportFinancingDays: "D/A 账期天数",
+      exportFactoryPriceStatus: "工厂价格状态",
+      exportTaxInclusiveRefund: "含税 + 可退税",
+      exportTaxExclusiveNoRefund: "不含税 / 无退税",
+      exportTaxRefundRate: "退税率（%）",
+      exportBankDhlLumpSum: "银行与 DHL 固定费用（USD）",
+      exportClientRebateCommission: "客户返利/佣金（%）",
       exportCalculateQuotation: "计算报价",
       exportFloorPrice: "Floor Price（严格底价）",
       exportCeilingPrice: "Ceiling Price（建议报价）",
@@ -590,10 +596,16 @@
       exportPriceInvalidTotalLogisticsFreight: "请输入有效的物流运杂费总额。",
       exportPriceInvalidExchangeRate: "请输入有效的汇率。",
       exportPriceInvalidFinancingDays: "请输入有效的 D/A 账期天数。",
+      exportPriceInvalidTaxRefundRate: "请输入有效的退税率。",
+      exportPriceInvalidBankLumpSumUsd: "请输入有效的银行与 DHL 固定费用。",
+      exportPriceInvalidClientRebateCommissionRate: "请输入有效的客户返利/佣金比例。",
       exportPriceFactoryUnitPricePositive: "工厂单价必须大于 0。",
       exportPriceTotalQuantityPositive: "订单总数量必须大于 0。",
       exportPriceExchangeRatePositive: "汇率必须大于 0。",
       exportPriceNonNegativeInputs: "物流运杂费和 D/A 账期天数不能为负数。",
+      exportPriceTaxRefundRateNonNegative: "退税率不能为负数。",
+      exportPriceBankLumpSumUsdNonNegative: "银行与 DHL 固定费用不能为负数。",
+      exportPriceClientRebateCommissionRateNonNegative: "客户返利/佣金比例不能为负数。",
       exportPriceCalculatorUnavailable: "报价计算模块未加载。请重新加载扩展后再试。",
       financialCalculatorTitle: "出口退税利润计算器",
       financialDrop: "拖入出口退税成本运费登记表，或点击选择 .xlsx/.xls/.csv",
@@ -805,6 +817,12 @@
       exportExchangeRate: "Exchange rate (USD/RMB)",
       exportCheckOfficialRate: "🌐 Check Official CFETS Rate",
       exportFinancingDays: "D/A payment term days",
+      exportFactoryPriceStatus: "Factory Price Status",
+      exportTaxInclusiveRefund: "Tax-Inclusive + Eligible for Refund",
+      exportTaxExclusiveNoRefund: "Tax-Exclusive / No Refund",
+      exportTaxRefundRate: "Tax Refund Rate (%)",
+      exportBankDhlLumpSum: "Bank & DHL Lump Sum (USD)",
+      exportClientRebateCommission: "Client Rebate/Commission (%)",
       exportCalculateQuotation: "Calculate Quotation",
       exportFloorPrice: "Floor Price (Strict Minimum)",
       exportCeilingPrice: "Ceiling Price (Recommended Quote)",
@@ -813,10 +831,16 @@
       exportPriceInvalidTotalLogisticsFreight: "Enter valid total logistics freight.",
       exportPriceInvalidExchangeRate: "Enter a valid exchange rate.",
       exportPriceInvalidFinancingDays: "Enter valid D/A payment term days.",
+      exportPriceInvalidTaxRefundRate: "Enter a valid tax refund rate.",
+      exportPriceInvalidBankLumpSumUsd: "Enter a valid Bank & DHL lump sum.",
+      exportPriceInvalidClientRebateCommissionRate: "Enter a valid client rebate/commission rate.",
       exportPriceFactoryUnitPricePositive: "Factory unit price must be greater than 0.",
       exportPriceTotalQuantityPositive: "Total order quantity must be greater than 0.",
       exportPriceExchangeRatePositive: "Exchange rate must be greater than 0.",
       exportPriceNonNegativeInputs: "Logistics freight and D/A payment term days cannot be negative.",
+      exportPriceTaxRefundRateNonNegative: "Tax refund rate cannot be negative.",
+      exportPriceBankLumpSumUsdNonNegative: "Bank & DHL lump sum cannot be negative.",
+      exportPriceClientRebateCommissionRateNonNegative: "Client rebate/commission rate cannot be negative.",
       exportPriceCalculatorUnavailable: "Quotation calculator module is not loaded. Reload the extension and try again.",
       financialCalculatorTitle: "Export tax rebate profit calculator",
       financialDrop: "Drop an export rebate cost/freight table, or click to select .xlsx/.xls/.csv",
@@ -3058,7 +3082,8 @@
         line-height: 1.3;
       }
 
-      .calculator-field input {
+      .calculator-field input,
+      .calculator-field select {
         width: 100%;
         min-width: 0;
         height: 36px;
@@ -3072,10 +3097,22 @@
         line-height: 1.2;
       }
 
-      .calculator-field input:focus {
+      .calculator-field input:focus,
+      .calculator-field select:focus {
         border-color: #0f766e;
         box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
         outline: none;
+      }
+
+      .calculator-field input:disabled,
+      .calculator-field select:disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+        cursor: not-allowed;
+      }
+
+      .calculator-field--disabled label {
+        color: #94a3b8;
       }
 
       .calculator-results {
@@ -4379,8 +4416,27 @@
                 <input id="export-price-factory-unit-price" data-export-price-input="factoryUnitPrice" type="number" min="0" step="0.01" inputmode="decimal" required>
               </div>
               <div class="calculator-field">
+                <label for="export-price-tax-status" data-i18n="exportFactoryPriceStatus">${t("exportFactoryPriceStatus")}</label>
+                <select id="export-price-tax-status" data-export-price-input="taxStatus">
+                  <option value="tax_inclusive_refund" selected data-i18n="exportTaxInclusiveRefund">${t("exportTaxInclusiveRefund")}</option>
+                  <option value="tax_exclusive_no_refund" data-i18n="exportTaxExclusiveNoRefund">${t("exportTaxExclusiveNoRefund")}</option>
+                </select>
+              </div>
+              <div class="calculator-field" data-export-tax-refund-rate-field>
+                <label for="export-price-tax-refund-rate" data-i18n="exportTaxRefundRate">${t("exportTaxRefundRate")}</label>
+                <input id="export-price-tax-refund-rate" data-export-price-input="taxRefundRate" type="number" min="0" step="0.01" value="13" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
                 <label for="export-price-total-quantity" data-i18n="exportTotalQuantity">${t("exportTotalQuantity")}</label>
                 <input id="export-price-total-quantity" data-export-price-input="totalQuantity" type="number" min="0" step="1" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-bank-dhl-lump-sum" data-i18n="exportBankDhlLumpSum">${t("exportBankDhlLumpSum")}</label>
+                <input id="export-price-bank-dhl-lump-sum" data-export-price-input="bankLumpSumUsd" type="number" min="0" step="0.01" value="100" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-client-rebate-commission" data-i18n="exportClientRebateCommission">${t("exportClientRebateCommission")}</label>
+                <input id="export-price-client-rebate-commission" data-export-price-input="clientRebateCommissionRate" type="number" min="0" step="0.01" value="1" inputmode="decimal" required>
               </div>
               <div class="calculator-field">
                 <label for="export-price-logistics-freight" data-i18n="exportLogisticsFreight">${t("exportLogisticsFreight")}</label>
@@ -7553,10 +7609,16 @@
       invalidTotalLogisticsFreight: t("exportPriceInvalidTotalLogisticsFreight"),
       invalidExchangeRate: t("exportPriceInvalidExchangeRate"),
       invalidFinancingDays: t("exportPriceInvalidFinancingDays"),
+      invalidTaxRefundRate: t("exportPriceInvalidTaxRefundRate"),
+      invalidBankLumpSumUsd: t("exportPriceInvalidBankLumpSumUsd"),
+      invalidClientRebateCommissionRate: t("exportPriceInvalidClientRebateCommissionRate"),
       factoryUnitPricePositive: t("exportPriceFactoryUnitPricePositive"),
       totalQuantityPositive: t("exportPriceTotalQuantityPositive"),
       exchangeRatePositive: t("exportPriceExchangeRatePositive"),
       nonNegativeInputs: t("exportPriceNonNegativeInputs"),
+      taxRefundRateNonNegative: t("exportPriceTaxRefundRateNonNegative"),
+      bankLumpSumUsdNonNegative: t("exportPriceBankLumpSumUsdNonNegative"),
+      clientRebateCommissionRateNonNegative: t("exportPriceClientRebateCommissionRateNonNegative"),
       usdPrefix: "USD"
     };
   }
