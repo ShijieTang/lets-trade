@@ -2,13 +2,15 @@
   "manifest_version": 3,
   "name": "CRM Embedded Workbench",
   "description": "Adds a right-side document workbench to the company CRM page.",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "permissions": [
     "bookmarks",
     "storage"
   ],
   "host_permissions": [
-    "https://generativelanguage.googleapis.com/*"
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.frankfurter.app/*",
+    "https://open.er-api.com/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -22,6 +24,7 @@
         "vendor/mammoth.browser.min.js",
         "vendor/xlsx.full.min.js",
         "src/financialCalculator.js",
+        "src/exportPriceCalculator.js",
         "src/customerCodeMap.js",
         "src/geminiExtractionProvider.js",
         "src/automationValidator.js",

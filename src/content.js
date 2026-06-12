@@ -42,6 +42,9 @@
   const FRAME_UPLOAD_RESPONSE = "CRM_WORKBENCH_UPLOAD_RESPONSE";
   const FRAME_AUTOFILL_REQUEST = "CRM_WORKBENCH_AUTOFILL_REQUEST";
   const FRAME_AUTOFILL_RESPONSE = "CRM_WORKBENCH_AUTOFILL_RESPONSE";
+  const EXPORT_MONTHLY_EXCHANGE_RATE_API_BASE_URL = "https://api.frankfurter.app";
+  const EXPORT_LATEST_EXCHANGE_RATE_API_URL = "https://open.er-api.com/v6/latest/USD";
+  const OFFICIAL_CFETS_RATE_URL = "https://www.chinamoney.com.cn/chinese/bkccpr/";
   const DEFAULT_PREVIEW_ZOOM = "100";
   const PREVIEW_ZOOM_LEVELS = [50, 75, 100, 125, 150, 200];
   const FINANCIAL_SOURCE_COLUMN_COUNT = 51;
@@ -493,6 +496,7 @@
       navAutoFill: "填表",
       navDocFlow: "单证",
       navCalculator: "计算",
+      navQuote: "报价",
       navFinancial: "退税",
       navDocument: "文档",
       navActions: "操作",
@@ -571,6 +575,26 @@
       purchaseDrop: "拖入采购价格表格，或点击选择 .xlsx/.xls/.csv",
       purchaseDropAria: "上传采购计算表格文件",
       calculatePurchaseTable: "计算采购表格",
+      exportPriceCalculatorTitle: "CIF D/A 90 报价计算器",
+      exportFactoryUnitPrice: "工厂单价（人民币）",
+      exportTotalQuantity: "订单总数量",
+      exportLogisticsFreight: "物流运杂费总额（人民币）",
+      exportExchangeRate: "汇率（USD/RMB）",
+      exportCheckOfficialRate: "🌐 Check Official CFETS Rate",
+      exportFinancingDays: "D/A 账期天数",
+      exportCalculateQuotation: "计算报价",
+      exportFloorPrice: "Floor Price（严格底价）",
+      exportCeilingPrice: "Ceiling Price（建议报价）",
+      exportPriceInvalidFactoryUnitPrice: "请输入有效的工厂单价。",
+      exportPriceInvalidTotalQuantity: "请输入有效的订单总数量。",
+      exportPriceInvalidTotalLogisticsFreight: "请输入有效的物流运杂费总额。",
+      exportPriceInvalidExchangeRate: "请输入有效的汇率。",
+      exportPriceInvalidFinancingDays: "请输入有效的 D/A 账期天数。",
+      exportPriceFactoryUnitPricePositive: "工厂单价必须大于 0。",
+      exportPriceTotalQuantityPositive: "订单总数量必须大于 0。",
+      exportPriceExchangeRatePositive: "汇率必须大于 0。",
+      exportPriceNonNegativeInputs: "物流运杂费和 D/A 账期天数不能为负数。",
+      exportPriceCalculatorUnavailable: "报价计算模块未加载。请重新加载扩展后再试。",
       financialCalculatorTitle: "出口退税利润计算器",
       financialDrop: "拖入出口退税成本运费登记表，或点击选择 .xlsx/.xls/.csv",
       financialDropAria: "上传退税计算表格文件",
@@ -695,6 +719,7 @@
       navAutoFill: "Auto Fill",
       navDocFlow: "Flow",
       navCalculator: "Calc",
+      navQuote: "CIF",
       navFinancial: "Tax",
       navDocument: "Docs",
       navActions: "Actions",
@@ -773,6 +798,26 @@
       purchaseDrop: "Drop a purchase pricing table, or click to select .xlsx/.xls/.csv",
       purchaseDropAria: "Upload table file for purchase calculation",
       calculatePurchaseTable: "Calculate purchase table",
+      exportPriceCalculatorTitle: "CIF D/A 90 quotation calculator",
+      exportFactoryUnitPrice: "Factory unit price (RMB)",
+      exportTotalQuantity: "Total order quantity",
+      exportLogisticsFreight: "Total logistics freight (RMB)",
+      exportExchangeRate: "Exchange rate (USD/RMB)",
+      exportCheckOfficialRate: "🌐 Check Official CFETS Rate",
+      exportFinancingDays: "D/A payment term days",
+      exportCalculateQuotation: "Calculate Quotation",
+      exportFloorPrice: "Floor Price (Strict Minimum)",
+      exportCeilingPrice: "Ceiling Price (Recommended Quote)",
+      exportPriceInvalidFactoryUnitPrice: "Enter a valid factory unit price.",
+      exportPriceInvalidTotalQuantity: "Enter a valid total order quantity.",
+      exportPriceInvalidTotalLogisticsFreight: "Enter valid total logistics freight.",
+      exportPriceInvalidExchangeRate: "Enter a valid exchange rate.",
+      exportPriceInvalidFinancingDays: "Enter valid D/A payment term days.",
+      exportPriceFactoryUnitPricePositive: "Factory unit price must be greater than 0.",
+      exportPriceTotalQuantityPositive: "Total order quantity must be greater than 0.",
+      exportPriceExchangeRatePositive: "Exchange rate must be greater than 0.",
+      exportPriceNonNegativeInputs: "Logistics freight and D/A payment term days cannot be negative.",
+      exportPriceCalculatorUnavailable: "Quotation calculator module is not loaded. Reload the extension and try again.",
       financialCalculatorTitle: "Export tax rebate profit calculator",
       financialDrop: "Drop an export rebate cost/freight table, or click to select .xlsx/.xls/.csv",
       financialDropAria: "Upload table file for rebate calculation",
@@ -3063,6 +3108,78 @@
         overflow-wrap: anywhere;
       }
 
+      .export-price-calculator__button {
+        width: 100%;
+        margin-top: 12px;
+        min-height: 38px;
+        border: 1px solid #0f766e;
+        border-radius: 6px;
+        background: #0f766e;
+        color: #ffffff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .export-price-calculator__button:hover {
+        background: #115e59;
+      }
+
+      .export-price-calculator__button:active {
+        transform: translateY(1px);
+      }
+
+      .export-price-calculator__results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .calculator-result--floor {
+        border-color: #f59e0b;
+        background: #fffbeb;
+      }
+
+      .calculator-result--floor .calculator-result__label {
+        color: #92400e;
+      }
+
+      .calculator-result--floor .calculator-result__value {
+        color: #b91c1c;
+        font-size: 19px;
+        font-weight: 900;
+      }
+
+      .calculator-result--ceiling {
+        border-color: #86efac;
+        background: #ecfdf5;
+      }
+
+      .calculator-result--ceiling .calculator-result__label {
+        color: #166534;
+      }
+
+      .calculator-result--ceiling .calculator-result__value {
+        color: #15803d;
+        font-size: 19px;
+        font-weight: 900;
+      }
+
+      .export-price-calculator__rate-link {
+        color: #0f766e;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.3;
+        text-decoration: none;
+      }
+
+      .export-price-calculator__rate-link:hover,
+      .export-price-calculator__rate-link:focus {
+        color: #115e59;
+        text-decoration: underline;
+        outline: none;
+      }
+
       .calculator-breakdown {
         margin: 12px 0 0;
         padding: 10px 12px;
@@ -3973,6 +4090,7 @@
         <button class="section-nav__button" type="button" data-section-target="auto-fill" data-i18n="navAutoFill" data-i18n-title="navAutoFill" title="${t("navAutoFill")}">${t("navAutoFill")}</button>
         <button class="section-nav__button" type="button" data-section-target="doc-flow" data-i18n="navDocFlow" data-i18n-title="navDocFlow" title="${t("navDocFlow")}">${t("navDocFlow")}</button>
         <button class="section-nav__button" type="button" data-section-target="calculator" data-i18n="navCalculator" data-i18n-title="navCalculator" title="${t("navCalculator")}">${t("navCalculator")}</button>
+        <button class="section-nav__button" type="button" data-section-target="export-price" data-i18n="navQuote" data-i18n-title="exportPriceCalculatorTitle" title="${t("exportPriceCalculatorTitle")}">${t("navQuote")}</button>
         <button class="section-nav__button" type="button" data-section-target="financial" data-i18n="navFinancial" data-i18n-title="navFinancial" title="${t("navFinancial")}">${t("navFinancial")}</button>
         <button class="section-nav__button" type="button" data-section-target="document" data-i18n="navDocument" data-i18n-title="navDocument" title="${t("navDocument")}">${t("navDocument")}</button>
         <button class="section-nav__button" type="button" data-section-target="actions" data-i18n="navActions" data-i18n-title="navActions" title="${t("navActions")}">${t("navActions")}</button>
@@ -4136,6 +4254,47 @@
           </div>
         </details>
 
+        <details class="price-calculator export-price-calculator" data-section="export-price" data-export-price-calculator>
+          <summary class="price-calculator__summary" data-i18n="exportPriceCalculatorTitle">${t("exportPriceCalculatorTitle")}</summary>
+          <form class="price-calculator__body" data-export-price-form novalidate>
+            <div class="calculator-grid">
+              <div class="calculator-field">
+                <label for="export-price-factory-unit-price" data-i18n="exportFactoryUnitPrice">${t("exportFactoryUnitPrice")}</label>
+                <input id="export-price-factory-unit-price" data-export-price-input="factoryUnitPrice" type="number" min="0" step="0.01" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-total-quantity" data-i18n="exportTotalQuantity">${t("exportTotalQuantity")}</label>
+                <input id="export-price-total-quantity" data-export-price-input="totalQuantity" type="number" min="0" step="1" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-logistics-freight" data-i18n="exportLogisticsFreight">${t("exportLogisticsFreight")}</label>
+                <input id="export-price-logistics-freight" data-export-price-input="totalLogisticsFreight" type="number" min="0" step="0.01" inputmode="decimal" required>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-exchange-rate" data-i18n="exportExchangeRate">${t("exportExchangeRate")}</label>
+                <input id="export-price-exchange-rate" data-export-price-input="exchangeRate" type="number" min="0" step="0.0001" inputmode="decimal" required>
+                <a class="export-price-calculator__rate-link" href="${OFFICIAL_CFETS_RATE_URL}" target="_blank" rel="noopener noreferrer" data-i18n="exportCheckOfficialRate">${t("exportCheckOfficialRate")}</a>
+              </div>
+              <div class="calculator-field">
+                <label for="export-price-financing-days" data-i18n="exportFinancingDays">${t("exportFinancingDays")}</label>
+                <input id="export-price-financing-days" data-export-price-input="financingDays" type="number" min="0" step="1" value="90" inputmode="numeric" required>
+              </div>
+            </div>
+            <button class="export-price-calculator__button" type="submit" data-i18n="exportCalculateQuotation">${t("exportCalculateQuotation")}</button>
+            <div class="calculator-results export-price-calculator__results" aria-live="polite">
+              <div class="calculator-result calculator-result--floor">
+                <span class="calculator-result__label" data-i18n="exportFloorPrice">${t("exportFloorPrice")}</span>
+                <span class="calculator-result__value" data-export-price-output="floorPrice">--</span>
+              </div>
+              <div class="calculator-result calculator-result--ceiling">
+                <span class="calculator-result__label" data-i18n="exportCeilingPrice">${t("exportCeilingPrice")}</span>
+                <span class="calculator-result__value" data-export-price-output="ceilingPrice">--</span>
+              </div>
+            </div>
+            <p class="calculator-error" data-export-price-error></p>
+          </form>
+        </details>
+
         <details class="price-calculator" data-section="financial">
           <summary class="price-calculator__summary" data-i18n="financialCalculatorTitle">${t("financialCalculatorTitle")}</summary>
           <div class="price-calculator__body">
@@ -4267,6 +4426,7 @@
     loadBookmarkFolders();
     initializeDocFlowMatrix();
     updatePriceCalculator();
+    initializeExportPriceCalculator();
   }
 
   function readStoredLanguage() {
@@ -4317,6 +4477,7 @@
 
     applyTranslations();
     updatePriceCalculator();
+    initializeExportPriceCalculator();
   }
 
   function applyTranslations() {
@@ -7139,6 +7300,120 @@
     `;
     errorOutput.textContent = "";
     errorOutput.classList.remove("is-visible");
+  }
+
+  function initializeExportPriceCalculator() {
+    const calculatorRoot = shadowRoot?.querySelector("[data-export-price-calculator]");
+    if (!calculatorRoot) {
+      return;
+    }
+
+    const calculator = window.CrmExportPriceCalculator;
+    const errorOutput = calculatorRoot.querySelector("[data-export-price-error]");
+    if (!calculator?.mount) {
+      if (errorOutput) {
+        errorOutput.textContent = t("exportPriceCalculatorUnavailable");
+        errorOutput.classList.add("is-visible");
+      }
+      return;
+    }
+
+    calculator.mount(calculatorRoot, {
+      getMessages: getExportPriceCalculatorMessages
+    });
+
+    populateExportExchangeRate();
+  }
+
+  async function populateExportExchangeRate() {
+    const exchangeRateInput = shadowRoot?.querySelector('[data-export-price-input="exchangeRate"]');
+    if (!(exchangeRateInput instanceof HTMLInputElement) || exchangeRateInput.value.trim()) {
+      return;
+    }
+
+    try {
+      const { rate } = await fetchExportExchangeRate();
+
+      if (!exchangeRateInput.value.trim()) {
+        exchangeRateInput.value = rate.toFixed(4);
+        exchangeRateInput.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    } catch (error) {
+      console.error("[CRM Workbench] Failed to fetch USD/CNY exchange rate.", error);
+    }
+  }
+
+  async function fetchExportExchangeRate() {
+    const monthStartDate = getCurrentMonthStartDate();
+
+    try {
+      return await fetchMonthlyExportExchangeRate(monthStartDate);
+    } catch (error) {
+      console.warn("[CRM Workbench] Failed to fetch first-day USD/CNY rate; falling back to latest rate.", error);
+    }
+
+    return fetchLatestExportExchangeRate();
+  }
+
+  async function fetchMonthlyExportExchangeRate(monthStartDate) {
+    const payload = await fetchExchangeRateJson(`${EXPORT_MONTHLY_EXCHANGE_RATE_API_BASE_URL}/${monthStartDate}?from=USD&to=CNY`);
+    const rate = Number(payload?.rates?.CNY);
+    if (!Number.isFinite(rate) || rate <= 0) {
+      throw new Error("Monthly exchange rate response did not include a valid USD/CNY rate.");
+    }
+
+    return {
+      rate,
+      source: "monthly",
+      date: payload?.date || monthStartDate
+    };
+  }
+
+  async function fetchLatestExportExchangeRate() {
+    const payload = await fetchExchangeRateJson(EXPORT_LATEST_EXCHANGE_RATE_API_URL);
+    const rate = Number(payload?.rates?.CNY);
+    if (!Number.isFinite(rate) || rate <= 0) {
+      throw new Error("Latest exchange rate response did not include a valid USD/CNY rate.");
+    }
+
+    return {
+      rate,
+      source: "latest",
+      date: payload?.time_last_update_utc || ""
+    };
+  }
+
+  async function fetchExchangeRateJson(url) {
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store"
+    });
+    if (!response.ok) {
+      throw new Error(`Exchange rate API responded with HTTP ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  function getCurrentMonthStartDate(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${year}-${month}-01`;
+  }
+
+  function getExportPriceCalculatorMessages() {
+    return {
+      invalidFactoryUnitPrice: t("exportPriceInvalidFactoryUnitPrice"),
+      invalidTotalQuantity: t("exportPriceInvalidTotalQuantity"),
+      invalidTotalLogisticsFreight: t("exportPriceInvalidTotalLogisticsFreight"),
+      invalidExchangeRate: t("exportPriceInvalidExchangeRate"),
+      invalidFinancingDays: t("exportPriceInvalidFinancingDays"),
+      factoryUnitPricePositive: t("exportPriceFactoryUnitPricePositive"),
+      totalQuantityPositive: t("exportPriceTotalQuantityPositive"),
+      exchangeRatePositive: t("exportPriceExchangeRatePositive"),
+      nonNegativeInputs: t("exportPriceNonNegativeInputs"),
+      usdPrefix: "USD"
+    };
   }
 
   function calculateContractPrice(values) {

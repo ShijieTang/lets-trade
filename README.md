@@ -1,6 +1,6 @@
 # CRM Embedded Workbench
 
-Version: `0.6.1`
+Version: `0.6.2`
 
 A Manifest V3 Chrome extension for `https://crm.chinaexp365.com/cloud/*`.
 
