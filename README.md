@@ -1,6 +1,6 @@
 # CRM Embedded Workbench
 
-Version: `0.6.2`
+Version: `0.6.2.2`
 
 A Manifest V3 Chrome extension for `https://crm.chinaexp365.com/cloud/*`.
 
@@ -15,6 +15,7 @@ The extension injects a right-side Shadow DOM workbench into the CRM page. It he
 - TradeOps Automation Hub with review-first validation and local audit logs.
 - RMB purchase contract price calculator.
 - Export tax rebate profit calculator.
+- CIF D/A quotation calculator with tax status, tax refund rate, client rebate/commission, and Bank & DHL lump-sum buffer.
 - Quick links with Chrome bookmark import.
 - Documentation Flow Matrix for tracking order document progress by `SC NO.`.
 - Chinese and English UI toggle.
@@ -30,6 +31,18 @@ The extension injects a right-side Shadow DOM workbench into the CRM page. It he
 There is no build step. The extension runs plain browser JavaScript from `src/` and bundled browser libraries from `vendor/`.
 
 ## Release Notes
+
+### 0.6.2.2
+
+Patch release from `0.6.2`.
+
+This release updates the workbench UI and the CIF D/A quotation calculator:
+
+- Moves the fold/unfold and language controls to the top-left, with only fold/unfold visible while collapsed.
+- Restyles the AI Auto Fill panel to match the rest of the workbench.
+- Reorders workbench sections around the upload, auto-fill, document flow, calculator, document, links, and action workflow.
+- Adds export quote controls for factory price tax status, tax refund rate, Bank & DHL lump-sum buffer, and client rebate/commission.
+- Updates the export quote floor and ceiling price calculations for conditional tax refund handling and fixed order-level Bank & DHL cost allocation.
 
 ### 0.6.1
 
@@ -112,6 +125,23 @@ Step 4 `交单寄件审核` includes:
 - `客户的CI/PL/标签为签字版`
 - `标签，报关单等资料的信息准确无误`
 
+## Trade Calculators
+
+The workbench includes three calculation surfaces:
+
+- RMB purchase contract price calculator for purchase-side contract amounts.
+- Export tax rebate profit calculator for spreadsheet-based rebate profit review.
+- CIF D/A quotation calculator for sales quotes.
+
+The CIF D/A quotation calculator supports:
+
+- Factory price tax status selection.
+- Editable tax refund rate, defaulting to `13`.
+- Editable Bank & DHL lump-sum buffer, defaulting to `100` USD per order.
+- Editable client rebate/commission, defaulting to `1`.
+- Floor price output to four decimal places.
+- Ceiling price output to two decimal places.
+
 ## Storage
 
 The extension keeps lightweight UI state in Chrome storage and larger workflow records in IndexedDB.
@@ -128,6 +158,7 @@ This separation keeps uploaded photos and long workflow records out of Chrome ex
 - `manifest.json`: MV3 extension manifest.
 - `src/content.js`: main Shadow DOM workbench, Doc Flow Matrix, UI events, CRM automation helpers.
 - `src/background.js`: bookmark folder/link access for quick-link import.
+- `src/exportPriceCalculator.js`: CIF D/A quotation calculator logic.
 - `src/financialCalculator.js`: financial calculation helpers.
 - `src/customerCodeMap.js`: customer code mappings.
 - `src/automationSchema.js`: canonical trade fields, document types, risk levels, validation metadata, and default CRM mapping hints.
@@ -162,6 +193,7 @@ Run syntax checks:
 
 ```bash
 node --check src/content.js
+node --check src/exportPriceCalculator.js
 node --check src/automationSchema.js
 node --check src/documentImagePreprocessor.js
 node --check src/visionExtractionProvider.js
@@ -180,6 +212,7 @@ Manual checks:
 - Check both Chinese and English UI modes.
 - Check Doc Flow dashboard, order creation/opening, Step 1-4 navigation, Quick Reference Drawer, and copy toast.
 - Verify dashboard action buttons remain inside the workbench at the current sidebar width.
+- Verify the CIF D/A quotation calculator in both tax status modes, with editable tax refund rate, Bank & DHL lump sum, and client rebate/commission.
 - Test the Automation Hub with `docs/sample-commercial-invoice.txt`.
 - During Automation Hub testing, extract, edit, validate, scan CRM fields, map at least three fields, fill selected fields, confirm no CRM submit happens, and reload to confirm mappings persist.
 - Run `docs/automation-manual-test.md` before release.
