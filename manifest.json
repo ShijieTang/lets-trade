@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CRM Embedded Workbench",
   "description": "Adds a right-side document workbench to the company CRM page.",
-  "version": "0.6.2",
+  "version": "0.2.6.1",
   "permissions": [
     "bookmarks",
     "storage"

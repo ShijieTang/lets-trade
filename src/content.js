@@ -1728,9 +1728,9 @@
         flex: 0 0 auto;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 8px;
-        min-height: 44px;
+        min-height: 48px;
         padding: 8px 12px;
         background: #ffffff;
         border-bottom: 1px solid #dbe3ef;
@@ -1782,10 +1782,13 @@
 
       .workbench.is-collapsed .workbench-topbar {
         width: 100%;
-        justify-content: center;
-        gap: 6px;
+        justify-content: flex-start;
         padding: 8px;
         border-bottom: 0;
+      }
+
+      .workbench.is-collapsed .language-button {
+        display: none;
       }
 
       .workbench.is-collapsed .collapse-button {
@@ -3888,10 +3891,13 @@
       }
 
       .automation-ai {
-        border-top: 1px solid #e2e8f0;
-        padding: 12px 16px;
+        margin: 0 16px 14px;
+        border: 1px solid #dbe3ef;
+        border-radius: 8px;
+        background: #ffffff;
         display: grid;
-        gap: 10px;
+        gap: 0;
+        overflow: hidden;
       }
 
       .automation-ai__header {
@@ -3899,61 +3905,101 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
+        min-height: 48px;
+        padding: 10px 12px;
+        background: #eef2f7;
+        border-bottom: 1px solid #dbe3ef;
       }
 
       .automation-ai__title {
         margin: 0;
-        font-size: 16px;
-        line-height: 1.25;
+        min-width: 0;
         color: #0f172a;
+        font-size: 15px;
+        font-weight: 850;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
       }
 
-      .automation-ai__summary {
-        cursor: pointer;
-        font-weight: 700;
-        color: #0f172a;
+      .automation-ai__header .automation-ai__button {
+        flex: 0 0 auto;
+        max-width: 46%;
       }
 
       .automation-ai__body {
         display: grid;
-        gap: 10px;
-        padding: 12px 0;
+        gap: 12px;
+        padding: 12px;
       }
 
-      .automation-ai__grid {
+      .automation-ai .status {
+        margin: 0;
+      }
+
+      .automation-ai__actions {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .automation-ai__panel {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 10px;
+      }
+
+      .automation-ai__summary {
+        cursor: pointer;
+        color: #0f172a;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+
+      .automation-ai__summary:hover {
+        color: #0f766e;
+      }
+
+      .automation-ai__settings-body {
+        display: grid;
+        gap: 10px;
+        padding: 12px 0 2px;
+      }
+
+      .automation-ai__settings-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
         gap: 8px;
       }
 
       .automation-ai__field {
         display: grid;
-        gap: 4px;
-        font-size: 12px;
+        gap: 5px;
         color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.35;
       }
 
       .automation-ai__field input,
       .automation-ai__field select {
+        width: 100%;
         min-width: 0;
         border: 1px solid #cbd5e1;
         border-radius: 6px;
         padding: 7px 8px;
+        background: #ffffff;
+        color: #0f172a;
         font: inherit;
+        font-size: 13px;
+        font-weight: 600;
       }
 
-      .automation-ai__checkbox {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: #334155;
-      }
-
-      .automation-ai__buttons {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+      .automation-ai__field input:focus,
+      .automation-ai__field select:focus,
+      .automation-review__value:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+        outline: none;
       }
 
       .automation-ai__button {
@@ -3961,14 +4007,31 @@
         border-radius: 6px;
         background: #ffffff;
         color: #0f172a;
-        padding: 8px;
+        min-height: 36px;
+        padding: 8px 10px;
         font: inherit;
-        font-weight: 700;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.2;
         cursor: pointer;
+        white-space: normal;
       }
 
       .automation-ai__button:hover {
-        background: #f8fafc;
+        border-color: #0f766e;
+        background: #ecfdf5;
+        color: #0f3f3a;
+      }
+
+      .automation-ai__button--primary {
+        border-color: #0f766e;
+        background: #0f766e;
+        color: #ffffff;
+      }
+
+      .automation-ai__button--primary:hover {
+        background: #115e59;
+        color: #ffffff;
       }
 
       .automation-review,
@@ -3982,7 +4045,7 @@
 
       .automation-review table {
         width: 100%;
-        min-width: 900px;
+        min-width: 780px;
         border-collapse: collapse;
         font-size: 12px;
       }
@@ -3990,9 +4053,20 @@
       .automation-review th,
       .automation-review td {
         border-bottom: 1px solid #e2e8f0;
-        padding: 6px;
+        padding: 8px;
         text-align: left;
         vertical-align: top;
+      }
+
+      .automation-review th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .automation-review tr:last-child td {
+        border-bottom: 0;
       }
 
       .automation-review input[type="checkbox"] {
@@ -4000,17 +4074,68 @@
         height: 16px;
       }
 
+      .automation-review__field {
+        color: #0f172a;
+        font-weight: 750;
+        word-break: break-word;
+      }
+
+      .automation-review__value {
+        width: 100%;
+        min-width: 180px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 7px 8px;
+        background: #ffffff;
+        color: #0f172a;
+        font: inherit;
+      }
+
+      .automation-review__badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #334155;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .automation-review__badge--success {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .automation-review__badge--warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .automation-review__badge--danger {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .automation-review__badge--wrap {
+        white-space: normal;
+      }
+
       .automation-review__empty {
         margin: 0;
-        padding: 10px;
+        padding: 12px;
         color: #64748b;
         font-size: 12px;
       }
 
       .automation-debug {
-        padding: 8px;
+        margin-top: 10px;
+        padding: 10px;
         white-space: pre-wrap;
         font-size: 11px;
+        line-height: 1.55;
         color: #334155;
       }
 
@@ -4048,11 +4173,22 @@
         .calculator-file-tools,
         .quick-links__form,
         .quick-links-bookmarks,
+        .automation-ai__actions,
+        .automation-ai__settings-row,
         .doc-flow-grid,
         .doc-flow-nav,
         .doc-flow-footer,
         .batch-summary {
           grid-template-columns: 1fr;
+        }
+
+        .automation-ai__header {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .automation-ai__header .automation-ai__button {
+          max-width: none;
         }
 
         .preview-zoom-tools {
@@ -4080,19 +4216,19 @@
     wrapper.className = "workbench";
     wrapper.innerHTML = `
       <div class="workbench-topbar">
-        <button class="language-button" type="button" data-i18n="languageToggleText" data-i18n-aria-label="languageToggleLabel" data-i18n-title="languageToggleTitle" aria-label="${t("languageToggleLabel")}" title="${t("languageToggleTitle")}">${t("languageToggleText")}</button>
         <button class="collapse-button" type="button" data-i18n-aria-label="foldWorkbench" data-i18n-title="foldWorkbench" aria-label="${t("foldWorkbench")}" title="${t("foldWorkbench")}">‹</button>
+        <button class="language-button" type="button" data-i18n="languageToggleText" data-i18n-aria-label="languageToggleLabel" data-i18n-title="languageToggleTitle" aria-label="${t("languageToggleLabel")}" title="${t("languageToggleTitle")}">${t("languageToggleText")}</button>
       </div>
       <div class="resize-handle" role="separator" data-i18n-aria-label="resizeWorkbench" aria-label="${t("resizeWorkbench")}" aria-orientation="vertical" tabindex="0"></div>
       <nav class="section-nav" data-i18n-aria-label="sectionNavLabel" aria-label="${t("sectionNavLabel")}">
         <button class="section-nav__button" type="button" data-section-target="upload" data-i18n="navUpload" data-i18n-title="navUpload" title="${t("navUpload")}">${t("navUpload")}</button>
-        <button class="section-nav__button" type="button" data-section-target="links" data-i18n="navLinks" data-i18n-title="navLinks" title="${t("navLinks")}">${t("navLinks")}</button>
         <button class="section-nav__button" type="button" data-section-target="auto-fill" data-i18n="navAutoFill" data-i18n-title="navAutoFill" title="${t("navAutoFill")}">${t("navAutoFill")}</button>
         <button class="section-nav__button" type="button" data-section-target="doc-flow" data-i18n="navDocFlow" data-i18n-title="navDocFlow" title="${t("navDocFlow")}">${t("navDocFlow")}</button>
         <button class="section-nav__button" type="button" data-section-target="calculator" data-i18n="navCalculator" data-i18n-title="navCalculator" title="${t("navCalculator")}">${t("navCalculator")}</button>
         <button class="section-nav__button" type="button" data-section-target="export-price" data-i18n="navQuote" data-i18n-title="exportPriceCalculatorTitle" title="${t("exportPriceCalculatorTitle")}">${t("navQuote")}</button>
         <button class="section-nav__button" type="button" data-section-target="financial" data-i18n="navFinancial" data-i18n-title="navFinancial" title="${t("navFinancial")}">${t("navFinancial")}</button>
         <button class="section-nav__button" type="button" data-section-target="document" data-i18n="navDocument" data-i18n-title="navDocument" title="${t("navDocument")}">${t("navDocument")}</button>
+        <button class="section-nav__button" type="button" data-section-target="links" data-i18n="navLinks" data-i18n-title="navLinks" title="${t("navLinks")}">${t("navLinks")}</button>
         <button class="section-nav__button" type="button" data-section-target="actions" data-i18n="navActions" data-i18n-title="navActions" title="${t("navActions")}">${t("navActions")}</button>
       </nav>
 
@@ -4109,64 +4245,44 @@
           <div class="automation-ai__header">
             <h2 class="automation-ai__title" data-i18n="autoFillTitle">${t("autoFillTitle")}</h2>
             <input class="automation-pdf-input" type="file" accept=".pdf,application/pdf" hidden>
-            <button class="automation-ai__button" type="button" data-auto-fill-load-pdf data-i18n="autoFillLoadPdf">${t("autoFillLoadPdf")}</button>
+            <button class="automation-ai__button automation-ai__button--primary" type="button" data-auto-fill-load-pdf data-i18n="autoFillLoadPdf">${t("autoFillLoadPdf")}</button>
           </div>
-          <div class="automation-ai__buttons">
-            <button class="automation-ai__button" type="button" data-auto-fill-validate data-i18n="autoFillValidate">${t("autoFillValidate")}</button>
-            <button class="automation-ai__button" type="button" data-auto-fill-fill data-i18n="autoFillFillCrm">${t("autoFillFillCrm")}</button>
-            <button class="automation-ai__button" type="button" data-auto-fill-save-mapping data-i18n="autoFillSaveMapping">${t("autoFillSaveMapping")}</button>
-          </div>
-          <p class="status" data-auto-fill-status>${t("autoFillEmpty")}</p>
-          <div class="automation-review" data-auto-fill-review></div>
-          <details class="automation-debug-panel">
-            <summary class="automation-ai__summary" data-i18n="autoFillRawResponse">${t("autoFillRawResponse")}</summary>
-            <pre class="automation-debug" data-auto-fill-raw-response>${t("autoFillRawResponseEmpty")}</pre>
-          </details>
-          <details class="automation-ai__settings">
-            <summary class="automation-ai__summary" data-i18n="autoFillSettings">${t("autoFillSettings")}</summary>
-            <div class="automation-ai__body">
-              <label class="automation-ai__field">
-                <span data-i18n="autoFillApiKey">${t("autoFillApiKey")}</span>
-                <input type="password" autocomplete="off" data-auto-fill-api-key>
-              </label>
-              <div class="automation-ai__grid">
+          <div class="automation-ai__body">
+            <p class="status" data-auto-fill-status>${t("autoFillEmpty")}</p>
+            <div class="automation-ai__actions">
+              <button class="automation-ai__button" type="button" data-auto-fill-validate data-i18n="autoFillValidate">${t("autoFillValidate")}</button>
+              <button class="automation-ai__button automation-ai__button--primary" type="button" data-auto-fill-fill data-i18n="autoFillFillCrm">${t("autoFillFillCrm")}</button>
+              <button class="automation-ai__button" type="button" data-auto-fill-save-mapping data-i18n="autoFillSaveMapping">${t("autoFillSaveMapping")}</button>
+            </div>
+            <div class="automation-review" data-auto-fill-review></div>
+            <details class="automation-debug-panel automation-ai__panel">
+              <summary class="automation-ai__summary" data-i18n="autoFillRawResponse">${t("autoFillRawResponse")}</summary>
+              <pre class="automation-debug" data-auto-fill-raw-response>${t("autoFillRawResponseEmpty")}</pre>
+            </details>
+            <details class="automation-ai__settings automation-ai__panel">
+              <summary class="automation-ai__summary" data-i18n="autoFillSettings">${t("autoFillSettings")}</summary>
+              <div class="automation-ai__settings-body">
                 <label class="automation-ai__field">
-                  <span data-i18n="autoFillModel">${t("autoFillModel")}</span>
-                  <input type="text" value="gemini-2.5-flash" data-auto-fill-model>
+                  <span data-i18n="autoFillApiKey">${t("autoFillApiKey")}</span>
+                  <input type="password" autocomplete="off" data-auto-fill-api-key>
                 </label>
-                <label class="automation-ai__field">
-                  <span data-i18n="autoFillMode">${t("autoFillMode")}</span>
-                  <select data-auto-fill-mode>
-                    <option value="gemini_pdf_direct">gemini_pdf_direct</option>
-                  </select>
-                </label>
+                <div class="automation-ai__settings-row">
+                  <label class="automation-ai__field">
+                    <span data-i18n="autoFillModel">${t("autoFillModel")}</span>
+                    <input type="text" value="gemini-2.5-flash" data-auto-fill-model>
+                  </label>
+                  <label class="automation-ai__field">
+                    <span data-i18n="autoFillMode">${t("autoFillMode")}</span>
+                    <select data-auto-fill-mode>
+                      <option value="gemini_pdf_direct">gemini_pdf_direct</option>
+                    </select>
+                  </label>
+                </div>
+                <button class="automation-ai__button" type="button" data-auto-fill-save-config data-i18n="autoFillSaveSettings">${t("autoFillSaveSettings")}</button>
               </div>
-              <button class="automation-ai__button" type="button" data-auto-fill-save-config data-i18n="autoFillSaveSettings">${t("autoFillSaveSettings")}</button>
-            </div>
-          </details>
-        </section>
-
-        <details class="quick-links" data-section="links">
-          <summary class="quick-links__summary">
-            <h2 class="quick-links__title" data-i18n="quickLinksTitle">${t("quickLinksTitle")}</h2>
-          </summary>
-          <div class="quick-links__body">
-            <div class="quick-links__list" aria-live="polite"></div>
-            <form class="quick-links__form">
-              <input class="quick-links__input" name="name" type="text" autocomplete="off" data-i18n-aria-label="quickLinksNameLabel" data-i18n-placeholder="quickLinksNamePlaceholder" aria-label="${t("quickLinksNameLabel")}" placeholder="${t("quickLinksNamePlaceholder")}">
-              <input class="quick-links__input" name="url" type="text" autocomplete="off" inputmode="url" data-i18n-aria-label="quickLinksUrlLabel" data-i18n-placeholder="quickLinksUrlPlaceholder" aria-label="${t("quickLinksUrlLabel")}" placeholder="${t("quickLinksUrlPlaceholder")}">
-              <button class="quick-links__button" type="submit" data-i18n="quickLinksAdd">${t("quickLinksAdd")}</button>
-              <button class="quick-links__button quick-links__button--secondary" type="button" data-quick-links-cancel-edit data-i18n="quickLinksCancel">${t("quickLinksCancel")}</button>
-            </form>
-            <div class="quick-links-bookmarks" hidden>
-              <select class="quick-links__select" data-quick-links-bookmark-folders data-i18n-aria-label="quickLinksBookmarkFolder" aria-label="${t("quickLinksBookmarkFolder")}">
-                <option value="" data-i18n="quickLinksBookmarkSelect">${t("quickLinksBookmarkSelect")}</option>
-              </select>
-              <button class="quick-links__button" type="button" data-quick-links-import disabled data-i18n="quickLinksImport">${t("quickLinksImport")}</button>
-            </div>
-            <p class="quick-links__status" role="status"></p>
+            </details>
           </div>
-        </details>
+        </section>
 
         <section class="doc-flow" data-section="doc-flow">
           <div class="doc-flow__header">
@@ -4315,6 +4431,28 @@
           </div>
           <div class="editor" contenteditable="true" role="textbox" aria-multiline="true" data-i18n-data-placeholder="editorPlaceholder" data-placeholder="${t("editorPlaceholder")}"></div>
         </section>
+
+        <details class="quick-links" data-section="links">
+          <summary class="quick-links__summary">
+            <h2 class="quick-links__title" data-i18n="quickLinksTitle">${t("quickLinksTitle")}</h2>
+          </summary>
+          <div class="quick-links__body">
+            <div class="quick-links__list" aria-live="polite"></div>
+            <form class="quick-links__form">
+              <input class="quick-links__input" name="name" type="text" autocomplete="off" data-i18n-aria-label="quickLinksNameLabel" data-i18n-placeholder="quickLinksNamePlaceholder" aria-label="${t("quickLinksNameLabel")}" placeholder="${t("quickLinksNamePlaceholder")}">
+              <input class="quick-links__input" name="url" type="text" autocomplete="off" inputmode="url" data-i18n-aria-label="quickLinksUrlLabel" data-i18n-placeholder="quickLinksUrlPlaceholder" aria-label="${t("quickLinksUrlLabel")}" placeholder="${t("quickLinksUrlPlaceholder")}">
+              <button class="quick-links__button" type="submit" data-i18n="quickLinksAdd">${t("quickLinksAdd")}</button>
+              <button class="quick-links__button quick-links__button--secondary" type="button" data-quick-links-cancel-edit data-i18n="quickLinksCancel">${t("quickLinksCancel")}</button>
+            </form>
+            <div class="quick-links-bookmarks" hidden>
+              <select class="quick-links__select" data-quick-links-bookmark-folders data-i18n-aria-label="quickLinksBookmarkFolder" aria-label="${t("quickLinksBookmarkFolder")}">
+                <option value="" data-i18n="quickLinksBookmarkSelect">${t("quickLinksBookmarkSelect")}</option>
+              </select>
+              <button class="quick-links__button" type="button" data-quick-links-import disabled data-i18n="quickLinksImport">${t("quickLinksImport")}</button>
+            </div>
+            <p class="quick-links__status" role="status"></p>
+          </div>
+        </details>
       </div>
 
       <footer class="action-bar" data-section="actions">
@@ -7132,17 +7270,24 @@
   function renderAutoFillRow(field) {
     const validation = field.validation || autoFillState.validations[field.key] || {};
     const risk = validation.riskLevel || "low";
-    const validationText = validation.valid && !validation.reviewRequired
+    const isReady = validation.valid && !validation.reviewRequired;
+    const validationText = isReady
       ? t("autoFillReady")
       : `${t("autoFillReview")}${validation.issues?.length ? `: ${validation.issues.join(", ")}` : ""}`;
+    const riskBadgeClass = risk === "high"
+      ? " automation-review__badge--danger"
+      : risk === "medium"
+        ? " automation-review__badge--warning"
+        : "";
+    const validationBadgeClass = isReady ? " automation-review__badge--success" : " automation-review__badge--warning";
     return `
       <tr>
         <td><input type="checkbox" data-auto-fill-include="${escapeHtml(field.key)}"${field.include ? " checked" : ""}></td>
-        <td>${escapeHtml(field.key)}</td>
-        <td><input class="quick-links__input" type="text" value="${escapeHtml(field.value)}" data-auto-fill-value="${escapeHtml(field.key)}"></td>
-        <td>${escapeHtml(formatPercent(field.confidence))}</td>
-        <td>${escapeHtml(translateAutoFillRisk(risk))}</td>
-        <td>${escapeHtml(validationText)}</td>
+        <td class="automation-review__field">${escapeHtml(field.key)}</td>
+        <td><input class="automation-review__value" type="text" value="${escapeHtml(field.value)}" data-auto-fill-value="${escapeHtml(field.key)}"></td>
+        <td><span class="automation-review__badge">${escapeHtml(formatPercent(field.confidence))}</span></td>
+        <td><span class="automation-review__badge${riskBadgeClass}">${escapeHtml(translateAutoFillRisk(risk))}</span></td>
+        <td><span class="automation-review__badge automation-review__badge--wrap${validationBadgeClass}">${escapeHtml(validationText)}</span></td>
       </tr>
     `;
   }
